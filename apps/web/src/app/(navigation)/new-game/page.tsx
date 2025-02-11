@@ -6,29 +6,44 @@ import { addPlayer } from "@/app/actions/AddPlayer";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function NewGamePage() {
   const [name, setName] = useState("");
-  const [buyIns, setBuyIns] = useState(0);
-  const [gainsLosses, setGainsLosses] = useState(0);
+  const [buyIns, setBuyIns] = useState<number>(0);
+  const [gainsLosses, setGainsLosses] = useState<number>(0);
   const [players, setPlayers] = useState<
     { name: string; buyIns: number; gainsLosses: number }[]
   >([]);
 
   const handleSubmit = (e: any) => {
     e.preventDefault();
-    console.log("data", { name, buyIns, gainsLosses });
     setPlayers([...players, { name, buyIns, gainsLosses }]);
     setName("");
     setBuyIns(0);
     setGainsLosses(0);
+
+    localStorage.setItem(
+      "players",
+      JSON.stringify([...players, { name, buyIns, gainsLosses }])
+    );
   };
 
   const handleDelete = (index: number) => {
     const newPlayers = players.filter((player, i) => i !== index);
     setPlayers(newPlayers);
+    localStorage.setItem("players", JSON.stringify(newPlayers));
   };
+
+  useEffect(() => {
+    const playersLocalStorage = localStorage.getItem("players");
+    if (playersLocalStorage) {
+      setPlayers(JSON.parse(playersLocalStorage));
+    }
+  }, []);
+
+  const totalBuyIns = players.reduce((acc, player) => acc + player.buyIns, 0);
+
   return (
     <div>
       <h1 className=" my-8">New Game</h1>
@@ -80,11 +95,16 @@ export default function NewGamePage() {
               />
             </div>
           </div>
-          <Button onClick={(e) => handleSubmit(e)}>Submit</Button>
+          <Button variant="default" onClick={(e) => handleSubmit(e)}>
+            Submit
+          </Button>
         </form>
 
         <div>
           <GameTable players={players} handleDelete={handleDelete} />
+        </div>
+        <div className=" border-t mt-4 pt-4">
+          <p>Total Buy Ins: ${totalBuyIns}</p>
         </div>
       </div>
     </div>

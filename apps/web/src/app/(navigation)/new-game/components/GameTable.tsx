@@ -1,3 +1,4 @@
+import { Button } from "@/components/ui/button";
 import {
   Table,
   TableBody,
@@ -26,6 +27,9 @@ export default function GameTable({ players, handleDelete }: GameTableProps) {
           <TableHead>
             <span>Gains/Losses</span>
           </TableHead>
+          <TableHead>
+            <span>Profit</span>
+          </TableHead>
           <TableHead></TableHead>
         </TableRow>
       </TableHeader>
@@ -36,8 +40,14 @@ export default function GameTable({ players, handleDelete }: GameTableProps) {
               <TableCell>{player.name}</TableCell>
               <TableCell>{player.buyIns}</TableCell>
               <TableCell>{player.gainsLosses}</TableCell>
+              <TableCell>{player.buyIns + player.gainsLosses}</TableCell>
               <TableCell>
-                <button onClick={() => handleDelete(index)}>Delete</button>
+                <Button
+                  variant="destructive"
+                  onClick={() => handleDelete(index)}
+                >
+                  Delete
+                </Button>
               </TableCell>
             </TableRow>
           );
