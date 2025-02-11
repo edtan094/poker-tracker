@@ -9,9 +9,10 @@ import {
 
 type GameTableProps = {
   players: any[];
+  handleDelete: (index: number) => void;
 };
 
-export default function GameTable({ players }: GameTableProps) {
+export default function GameTable({ players, handleDelete }: GameTableProps) {
   return (
     <Table>
       <TableHeader>
@@ -29,14 +30,14 @@ export default function GameTable({ players }: GameTableProps) {
         </TableRow>
       </TableHeader>
       <TableBody>
-        {players.map((player) => {
+        {players.map((player, index) => {
           return (
             <TableRow key={player.id}>
               <TableCell>{player.name}</TableCell>
               <TableCell>{player.buyIns}</TableCell>
               <TableCell>{player.gainsLosses}</TableCell>
               <TableCell>
-                <button>Delete</button>
+                <button onClick={() => handleDelete(index)}>Delete</button>
               </TableCell>
             </TableRow>
           );
