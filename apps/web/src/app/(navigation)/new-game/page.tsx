@@ -50,9 +50,9 @@ export default function NewGamePage() {
         <form>
           <div className="grid gap-4 py-4">
             <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="name" className="text-right">
+              <label htmlFor="name" className="text-right">
                 Name
-              </Label>
+              </label>
               <Input
                 id="name"
                 className="col-span-3"
@@ -63,9 +63,7 @@ export default function NewGamePage() {
               />
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="buyins" className="text-right">
-                Buy Ins
-              </Label>
+              <label htmlFor="buyIns">Buy Ins</label>
               <Input
                 id="buyIns"
                 type="number"
@@ -77,9 +75,7 @@ export default function NewGamePage() {
               />
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="gains-losses" className="text-right">
-                Gains/Losses
-              </Label>
+              <label htmlFor="gainslosses">Gains/Losses</label>
               <Input
                 id="gainslosses"
                 type="number"
