@@ -7,9 +7,10 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { Player } from "../page";
 
 type GameTableProps = {
-  players: any[];
+  players: Player[];
   handleDelete: (index: number) => void;
 };
 
@@ -36,7 +37,7 @@ export default function GameTable({ players, handleDelete }: GameTableProps) {
       <TableBody>
         {players.map((player, index) => {
           return (
-            <TableRow key={player.id}>
+            <TableRow key={index}>
               <TableCell>{player.name}</TableCell>
               <TableCell>{player.buyIns}</TableCell>
               <TableCell>{player.gains}</TableCell>

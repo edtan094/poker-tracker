@@ -6,14 +6,13 @@ import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
 import { Label } from "@/components/ui/label";
 
+export type Player = { name: string; buyIns: number; gains: number };
+
 export default function NewGamePage() {
   const [name, setName] = useState("");
   const [buyIns, setBuyIns] = useState<string>("");
   const [gains, setGains] = useState<string>("");
-  const [players, setPlayers] = useState<
-    { name: string; buyIns: number; gains: number }[]
-  >([]);
-  console.log("players", players);
+  const [players, setPlayers] = useState<Player[]>([]);
 
   const handleSubmit = (e: any) => {
     e.preventDefault();
