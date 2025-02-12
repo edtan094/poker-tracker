@@ -46,6 +46,7 @@ export default function NewGamePage() {
       <h1 className=" my-8">New Game</h1>
 
       <div>
+<<<<<<< HEAD
         <form>
           <div className="grid gap-4 py-4">
             <div className="grid grid-cols-4 items-center gap-4">
@@ -99,6 +100,67 @@ export default function NewGamePage() {
         <div className=" border-t mt-4 pt-4">
           <p>Total Buy Ins: ${totalBuyIns}</p>
         </div>
+||||||| dff121b
+        <Input type="text" placeholder="enter player name" />
+=======
+        <form>
+          <div className="grid gap-4 py-4">
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="name" className="text-right">
+                Name
+              </Label>
+              <Input
+                id="name"
+                className="col-span-3"
+                name="name"
+                required
+                onChange={(e) => setName(e.target.value)}
+                value={name}
+              />
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="buyins" className="text-right">
+                Buy Ins
+              </Label>
+              <Input
+                id="buyIns"
+                type="number"
+                name="buyIns"
+                required
+                className="col-span-3"
+                onChange={(e) => setBuyIns(Number(e.target.value || undefined))}
+                value={buyIns}
+              />
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="gains-losses" className="text-right">
+                Gains/Losses
+              </Label>
+              <Input
+                id="gainslosses"
+                type="number"
+                name="gainslosses"
+                required
+                className="col-span-3"
+                onChange={(e) =>
+                  setGainsLosses(Number(e.target.value || undefined))
+                }
+                value={gainsLosses}
+              />
+            </div>
+          </div>
+          <Button variant="default" onClick={(e) => handleSubmit(e)}>
+            Submit
+          </Button>
+        </form>
+
+        <div>
+          <GameTable players={players} handleDelete={handleDelete} />
+        </div>
+        <div className=" border-t mt-4 pt-4">
+          <p>Total Buy Ins: ${totalBuyIns}</p>
+        </div>
+>>>>>>> main
       </div>
     </div>
   );
