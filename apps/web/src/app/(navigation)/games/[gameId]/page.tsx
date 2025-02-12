@@ -1,60 +1,74 @@
 "use client";
-import GameTable from "./GameTable";
+import GameTable from "../components/GameTable";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
 import { Label } from "@/components/ui/label";
+import { addPlayerToGame } from "@/app/actions/GameActions";
 
 export type Player = { name: string; buyIns: number; gains: number };
 
-export default function NewGamePage() {
+export default function NewGamePage({
+  params: { gameId },
+}: {
+  params: { gameId: string };
+}) {
   const [name, setName] = useState("");
   const [buyIns, setBuyIns] = useState<string>("");
   const [gains, setGains] = useState<string>("");
   const [players, setPlayers] = useState<Player[]>([]);
 
-  const handleSubmit = (e: any) => {
-    e.preventDefault();
-    setPlayers([
-      ...players,
-      { name, buyIns: parseFloat(buyIns) || 0, gains: parseFloat(gains) || 0 },
-    ]);
-    setName("");
-    setBuyIns("");
-    setGains("");
+  //   const handleSubmit = (e: any) => {
+  //     e.preventDefault();
+  //     setPlayers([
+  //       ...players,
+  //       { name, buyIns: parseFloat(buyIns) || 0, gains: parseFloat(gains) || 0 },
+  //     ]);
+  //     setName("");
+  //     setBuyIns("");
+  //     setGains("");
 
-    localStorage.setItem(
-      "players",
-      JSON.stringify([
-        ...players,
-        {
-          name,
-          buyIns: parseFloat(buyIns) || 0,
-          gains: parseFloat(gains) || 0,
-        },
-      ])
-    );
-  };
+  //     localStorage.setItem(
+  //       "players",
+  //       JSON.stringify([
+  //         ...players,
+  //         {
+  //           name,
+  //           buyIns: parseFloat(buyIns) || 0,
+  //           gains: parseFloat(gains) || 0,
+  //         },
+  //       ])
+  //     );
+  //   };
 
-  const handleDelete = (index: number) => {
-    const newPlayers = players.filter((player, i) => i !== index);
-    setPlayers(newPlayers);
-    localStorage.setItem("players", JSON.stringify(newPlayers));
-  };
+  //   const handleDelete = (index: number) => {
+  //     const newPlayers = players.filter((player, i) => i !== index);
+  //     setPlayers(newPlayers);
+  //     localStorage.setItem("players", JSON.stringify(newPlayers));
+  //   };
 
-  useEffect(() => {
-    const playersLocalStorage = localStorage.getItem("players");
-    if (playersLocalStorage) {
-      setPlayers(JSON.parse(playersLocalStorage));
-    }
-  }, []);
+  //   useEffect(() => {
+  //     const playersLocalStorage = localStorage.getItem("players");
+  //     if (playersLocalStorage) {
+  //       setPlayers(JSON.parse(playersLocalStorage));
+  //     }
+  //   }, []);
 
   const totalBuyIns = players.reduce((acc, player) => acc + player.buyIns, 0);
 
   return (
     <div>
       <div className="mb-4 border-b pb-4">
-        <form>
+        <form
+          action={async () => {
+            await addPlayerToGame(
+              gameId,
+              name,
+              parseFloat(buyIns),
+              parseFloat(gains)
+            );
+          }}
+        >
           <div className="grid gap-4 py-4">
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="name" className="text-right">
@@ -111,7 +125,7 @@ export default function NewGamePage() {
               />
             </div>
           </div>
-          <Button variant="default" onClick={(e) => handleSubmit(e)}>
+          <Button variant="default" type="submit">
             Submit
           </Button>
         </form>
@@ -120,7 +134,7 @@ export default function NewGamePage() {
       <div>
         <GameTable
           players={players}
-          handleDelete={handleDelete}
+          handleDelete={() => {}}
           setPlayers={setPlayers}
         />
       </div>

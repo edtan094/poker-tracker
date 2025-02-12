@@ -11,11 +11,30 @@ datasource db {
 }
 
 model Player {
-  id       String  @id @default(uuid())
-  name     String
-  buyIn    Decimal
-  gains    Decimal
-  // Virtual Field (Not stored in DB, computed dynamically)
-  netProfit Decimal   @ignore
-  createdAt DateTime @default(now())
+  id        String        @id @default(uuid())
+  name      String
+  buyIn     Decimal
+  gains     Decimal       @default(0)
+  createdAt DateTime      @default(now())
+
+  playerGames PlayerGame[]  // Relation to PlayerGame model
+}
+
+model Game {
+  id         String        @id @default(uuid())
+  createdAt  DateTime      @default(now())
+
+  playerGames PlayerGame[]  // Relation to PlayerGame model
+}
+
+model PlayerGame {
+  id        String   @id @default(uuid())
+  playerId  String
+  gameId    String
+  buyIn     Decimal
+  gains     Decimal   @default(0)
+  netProfit Decimal   @default(0)
+
+  player    Player   @relation(fields: [playerId], references: [id])
+  game      Game     @relation(fields: [gameId], references: [id])
 }
