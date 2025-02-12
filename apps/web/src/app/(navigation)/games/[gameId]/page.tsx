@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
 import { Label } from "@/components/ui/label";
-import { addPlayerToGame } from "@/app/actions/GameActions";
+import { addPlayerToGame, getPlayersByGame } from "@/app/actions/GameActions";
 import {
   Select,
   SelectContent,
@@ -80,18 +80,27 @@ export default function NewGamePage({
       const newPlayer = await addPlayer(
         name,
         parseFloat(buyIns),
-        parseFloat(gains),
+        gains ? parseFloat(gains) : 0,
         gameId
       );
       await addPlayerToGame(
         gameId,
-        newPlayer.name,
+        newPlayer.id,
         newPlayer.buyIns,
         newPlayer.gains
       );
-      return;
+    } else {
+      await addPlayerToGame(
+        gameId,
+        name,
+        parseFloat(buyIns),
+        parseFloat(gains)
+      );
     }
-    await addPlayerToGame(gameId, name, parseFloat(buyIns), parseFloat(gains));
+
+    setName("");
+    setBuyIns("");
+    setGains("");
   };
 
   const totalBuyIns = players.reduce((acc, player) => acc + player.buyIns, 0);
@@ -109,6 +118,14 @@ export default function NewGamePage({
     }
 
     fetchAllPlayers();
+  }, []);
+
+  useEffect(() => {
+    async function fetchPlayersInGame() {
+      const data = await getPlayersByGame(gameId);
+      setPlayers(data);
+    }
+    fetchPlayersInGame();
   }, []);
 
   return (
@@ -171,7 +188,6 @@ export default function NewGamePage({
                 id="gains"
                 type="text"
                 name="gains"
-                required
                 className="col-span-3"
                 pattern="-?[0-9]*\.?[0-9]*"
                 onChange={(e) => {
