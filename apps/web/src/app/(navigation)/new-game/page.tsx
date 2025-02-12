@@ -8,22 +8,26 @@ import { Label } from "@/components/ui/label";
 
 export default function NewGamePage() {
   const [name, setName] = useState("");
-  const [buyIns, setBuyIns] = useState<number>(0);
-  const [gainsLosses, setGainsLosses] = useState<number>(0);
+  const [buyIns, setBuyIns] = useState<string>("");
+  const [gains, setGains] = useState<string>("");
   const [players, setPlayers] = useState<
-    { name: string; buyIns: number; gainsLosses: number }[]
+    { name: string; buyIns: number; gains: number }[]
   >([]);
+  console.log("players", players);
 
   const handleSubmit = (e: any) => {
     e.preventDefault();
-    setPlayers([...players, { name, buyIns, gainsLosses }]);
+    setPlayers([
+      ...players,
+      { name, buyIns: parseFloat(buyIns) || 0, gains: parseFloat(gains) || 0 },
+    ]);
     setName("");
-    setBuyIns(0);
-    setGainsLosses(0);
+    setBuyIns("");
+    setGains("");
 
     localStorage.setItem(
       "players",
-      JSON.stringify([...players, { name, buyIns, gainsLosses }])
+      JSON.stringify([...players, { name, buyIns, gains }])
     );
   };
 
@@ -72,24 +76,29 @@ export default function NewGamePage() {
                 name="buyIns"
                 required
                 className="col-span-3"
-                onChange={(e) => setBuyIns(Number(e.target.value || undefined))}
+                onChange={(e) => setBuyIns(e.target.value)}
                 value={buyIns}
               />
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="gainslosses" className="text-right">
-                Gains/Losses
+                {gains >= 0 ? (
+                  <span>Gains</span>
+                ) : (
+                  <span className="ml-2 text-destructive">Loss</span>
+                )}
               </Label>
               <Input
                 id="gainslosses"
                 type="number"
                 name="gainslosses"
                 required
+                inputMode="decimal"
                 className="col-span-3"
-                onChange={(e) =>
-                  setGainsLosses(Number(e.target.value || undefined))
-                }
-                value={gainsLosses}
+                onChange={(e) => {
+                  setGains(e.target.value);
+                }}
+                value={gains}
               />
             </div>
           </div>

@@ -39,8 +39,8 @@ export default function GameTable({ players, handleDelete }: GameTableProps) {
             <TableRow key={player.id}>
               <TableCell>{player.name}</TableCell>
               <TableCell>{player.buyIns}</TableCell>
-              <TableCell>{player.gainsLosses}</TableCell>
-              <TableCell>{player.buyIns + player.gainsLosses}</TableCell>
+              <TableCell>{player.gains}</TableCell>
+              <TableCell>{player.buyIns + player.gains}</TableCell>
               <TableCell>
                 <Button
                   variant="destructive"
