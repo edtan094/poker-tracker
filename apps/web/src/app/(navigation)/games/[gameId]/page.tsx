@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/select";
 import { addPlayer, getPlayers } from "@/app/actions/PlayerActions";
 import { Decimal } from "@prisma/client/runtime/library";
+import { Switch } from "@/components/ui/switch";
 
 export type Player = {
   id: string;
@@ -114,9 +115,15 @@ export default function NewGamePage({
     <div>
       <div className="mb-4 border-b pb-4">
         <div className="flex justify-center items-center">
-          <Button onClick={toggleExistingOrNewPlayer}>
-            {isNewPlayer ? "New Player" : "Existing Player"}
-          </Button>
+          <div className="flex items-center space-x-2">
+            <Switch
+              id="newOrExistingPlayer"
+              onClick={toggleExistingOrNewPlayer}
+            />
+            <Label htmlFor="newOrExistingPlayer">
+              {isNewPlayer ? "New Player" : "Existing Player"}
+            </Label>
+          </div>
         </div>
         <form action={handleSubmit}>
           <div className="grid gap-4 py-4">
