@@ -81,7 +81,7 @@ export default function NewGamePage() {
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="gainslosses" className="text-right">
-                {gains >= 0 ? (
+                {+gains >= 0 ? (
                   <span>Gains</span>
                 ) : (
                   <span className="ml-2 text-destructive">Loss</span>
@@ -107,7 +107,11 @@ export default function NewGamePage() {
         </form>
 
         <div>
-          <GameTable players={players} handleDelete={handleDelete} />
+          <GameTable
+            players={players}
+            handleDelete={handleDelete}
+            setPlayers={setPlayers}
+          />
         </div>
         <div className=" border-t mt-4 pt-4">
           <p>Total Buy Ins: ${totalBuyIns}</p>
