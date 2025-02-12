@@ -5,8 +5,22 @@ import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
 import { Label } from "@/components/ui/label";
 import { addPlayerToGame } from "@/app/actions/GameActions";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { addPlayer, getPlayers } from "@/app/actions/PlayerActions";
+import { Decimal } from "@prisma/client/runtime/library";
 
-export type Player = { name: string; buyIns: number; gains: number };
+export type Player = {
+  id: string;
+  name: string;
+  buyIns: Decimal;
+  gains: Decimal;
+};
 
 export default function NewGamePage({
   params: { gameId },
@@ -17,6 +31,8 @@ export default function NewGamePage({
   const [buyIns, setBuyIns] = useState<string>("");
   const [gains, setGains] = useState<string>("");
   const [players, setPlayers] = useState<Player[]>([]);
+  const [allPlayers, setAllPlayers] = useState<Player[]>([]);
+  const [isNewPlayer, setIsNewPlayer] = useState(true);
 
   //   const handleSubmit = (e: any) => {
   //     e.preventDefault();
@@ -54,35 +70,73 @@ export default function NewGamePage({
   //     }
   //   }, []);
 
+  const toggleExistingOrNewPlayer = () => {
+    setIsNewPlayer(!isNewPlayer);
+  };
+
+  const handleSubmit = async () => {
+    if (isNewPlayer) {
+      const newPlayer = await addPlayer(
+        name,
+        parseFloat(buyIns),
+        parseFloat(gains),
+        gameId
+      );
+      await addPlayerToGame(
+        gameId,
+        newPlayer.name,
+        newPlayer.buyIns,
+        newPlayer.gains
+      );
+      return;
+    }
+    await addPlayerToGame(gameId, name, parseFloat(buyIns), parseFloat(gains));
+  };
+
   const totalBuyIns = players.reduce((acc, player) => acc + player.buyIns, 0);
+
+  useEffect(() => {
+    async function fetchAllPlayers() {
+      const data = await getPlayers();
+      const players = data.map((player) => ({
+        id: player.id,
+        name: player.name,
+        buyIns: player.buyIns,
+        gains: player.gains,
+      }));
+      setAllPlayers(players);
+    }
+
+    fetchAllPlayers();
+  }, []);
 
   return (
     <div>
       <div className="mb-4 border-b pb-4">
-        <form
-          action={async () => {
-            await addPlayerToGame(
-              gameId,
-              name,
-              parseFloat(buyIns),
-              parseFloat(gains)
-            );
-          }}
-        >
+        <div className="flex justify-center items-center">
+          <Button onClick={toggleExistingOrNewPlayer}>
+            {isNewPlayer ? "New Player" : "Existing Player"}
+          </Button>
+        </div>
+        <form action={handleSubmit}>
           <div className="grid gap-4 py-4">
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="name" className="text-right">
                 Name
               </Label>
-              <Input
-                id="name"
-                className="col-span-3"
-                name="name"
-                type="text"
-                required
-                onChange={(e) => setName(e.target.value)}
-                value={name}
-              />
+              {isNewPlayer ? (
+                <Input
+                  id="name"
+                  className="col-span-3"
+                  name="name"
+                  type="text"
+                  required
+                  onChange={(e) => setName(e.target.value)}
+                  value={name}
+                />
+              ) : (
+                <SelectPlayers data={allPlayers} />
+              )}
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="buyIns" className="text-right">
@@ -142,5 +196,30 @@ export default function NewGamePage({
         <p>Total Buy Ins: ${totalBuyIns}</p>
       </div>
     </div>
+  );
+}
+
+type SelectPlayersProps = {
+  data: Player[];
+};
+
+function SelectPlayers({ data }: SelectPlayersProps) {
+  return (
+    <>
+      <Select>
+        <SelectTrigger className="w-[180px]">
+          <SelectValue placeholder="Select Existing Player" />
+        </SelectTrigger>
+        <SelectContent>
+          {data.map((player) => {
+            return (
+              <SelectItem key={player.id} value={player.id}>
+                {player.name}
+              </SelectItem>
+            );
+          })}
+        </SelectContent>
+      </Select>
+    </>
   );
 }

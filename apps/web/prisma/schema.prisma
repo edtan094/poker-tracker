@@ -13,7 +13,7 @@ datasource db {
 model Player {
   id        String        @id @default(uuid())
   name      String
-  buyIn     Decimal
+  buyIns     Decimal
   gains     Decimal       @default(0)
   createdAt DateTime      @default(now())
 
@@ -31,7 +31,7 @@ model PlayerGame {
   id        String   @id @default(uuid())
   playerId  String
   gameId    String
-  buyIn     Decimal
+  buyIns     Decimal
   gains     Decimal   @default(0)
   netProfit Decimal   @default(0)
 
