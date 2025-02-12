@@ -158,7 +158,6 @@ function EditGameRow({
       <TableCell>
         <Input
           type="text"
-          inputMode="decimal"
           value={tempPlayer?.gains.toString() || ""}
           onChange={(e) => {
             const value = e.target.value;
