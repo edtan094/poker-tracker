@@ -67,6 +67,7 @@ export default function NewGamePage() {
                 id="name"
                 className="col-span-3"
                 name="name"
+                type="text"
                 required
                 onChange={(e) => setName(e.target.value)}
                 value={name}
@@ -99,7 +100,6 @@ export default function NewGamePage() {
                 type="text"
                 name="gains"
                 required
-                inputMode="decimal"
                 className="col-span-3"
                 pattern="-?[0-9]*\.?[0-9]*"
                 onChange={(e) => {
