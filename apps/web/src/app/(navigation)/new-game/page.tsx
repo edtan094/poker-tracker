@@ -57,67 +57,69 @@ export default function NewGamePage() {
       <h1 className=" my-8">New Game</h1>
 
       <div>
-        <form>
-          <div className="grid gap-4 py-4">
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="name" className="text-right">
-                Name
-              </Label>
-              <Input
-                id="name"
-                className="col-span-3"
-                name="name"
-                type="text"
-                required
-                onChange={(e) => setName(e.target.value)}
-                value={name}
-              />
-            </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="buyIns" className="text-right">
-                Buy Ins
-              </Label>
-              <Input
-                id="buyIns"
-                type="number"
-                name="buyIns"
-                required
-                className="col-span-3"
-                onChange={(e) => setBuyIns(e.target.value)}
-                value={buyIns}
-              />
-            </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="gains" className="text-right">
-                {+gains >= 0 ? (
-                  <span>Gains</span>
-                ) : (
-                  <span className="ml-2 text-destructive">Loss</span>
-                )}
-              </Label>
-              <Input
-                id="gains"
-                type="text"
-                name="gains"
-                required
-                className="col-span-3"
-                pattern="-?[0-9]*\.?[0-9]*"
-                onChange={(e) => {
-                  const value = e.target.value;
+        <div className="mb-4 border-b pb-4">
+          <form>
+            <div className="grid gap-4 py-4">
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="name" className="text-right">
+                  Name
+                </Label>
+                <Input
+                  id="name"
+                  className="col-span-3"
+                  name="name"
+                  type="text"
+                  required
+                  onChange={(e) => setName(e.target.value)}
+                  value={name}
+                />
+              </div>
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="buyIns" className="text-right">
+                  Buy Ins
+                </Label>
+                <Input
+                  id="buyIns"
+                  type="number"
+                  name="buyIns"
+                  required
+                  className="col-span-3"
+                  onChange={(e) => setBuyIns(e.target.value)}
+                  value={buyIns}
+                />
+              </div>
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="gains" className="text-right">
+                  {+gains >= 0 ? (
+                    <span>Gains</span>
+                  ) : (
+                    <span className="ml-2 text-destructive">Loss</span>
+                  )}
+                </Label>
+                <Input
+                  id="gains"
+                  type="text"
+                  name="gains"
+                  required
+                  className="col-span-3"
+                  pattern="-?[0-9]*\.?[0-9]*"
+                  onChange={(e) => {
+                    const value = e.target.value;
 
-                  // Allow only numbers, optional negative sign, and a single decimal
-                  if (/^-?\d*\.?\d*$/.test(value) || value === "") {
-                    setGains(value);
-                  }
-                }}
-                value={gains}
-              />
+                    // Allow only numbers, optional negative sign, and a single decimal
+                    if (/^-?\d*\.?\d*$/.test(value) || value === "") {
+                      setGains(value);
+                    }
+                  }}
+                  value={gains}
+                />
+              </div>
             </div>
-          </div>
-          <Button variant="default" onClick={(e) => handleSubmit(e)}>
-            Submit
-          </Button>
-        </form>
+            <Button variant="default" onClick={(e) => handleSubmit(e)}>
+              Submit
+            </Button>
+          </form>
+        </div>
 
         <div>
           <GameTable
