@@ -26,7 +26,14 @@ export default function NewGamePage() {
 
     localStorage.setItem(
       "players",
-      JSON.stringify([...players, { name, buyIns, gains }])
+      JSON.stringify([
+        ...players,
+        {
+          name,
+          buyIns: parseFloat(buyIns) || 0,
+          gains: parseFloat(gains) || 0,
+        },
+      ])
     );
   };
 
@@ -80,7 +87,7 @@ export default function NewGamePage() {
               />
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="gainslosses" className="text-right">
+              <Label htmlFor="gains" className="text-right">
                 {+gains >= 0 ? (
                   <span>Gains</span>
                 ) : (
@@ -88,14 +95,20 @@ export default function NewGamePage() {
                 )}
               </Label>
               <Input
-                id="gainslosses"
-                type="number"
-                name="gainslosses"
+                id="gains"
+                type="text"
+                name="gains"
                 required
                 inputMode="decimal"
                 className="col-span-3"
+                pattern="-?[0-9]*\.?[0-9]*"
                 onChange={(e) => {
-                  setGains(e.target.value);
+                  const value = e.target.value;
+
+                  // Allow only numbers, optional negative sign, and a single decimal
+                  if (/^-?\d*\.?\d*$/.test(value) || value === "") {
+                    setGains(value);
+                  }
                 }}
                 value={gains}
               />

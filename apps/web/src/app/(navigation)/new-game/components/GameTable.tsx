@@ -131,7 +131,6 @@ function EditGameRow({
 }: EditGameRowProps) {
   return (
     <>
-      {/* Editable Name */}
       <TableCell>
         <Input
           type="text"
@@ -141,32 +140,41 @@ function EditGameRow({
         />
       </TableCell>
 
-      {/* Editable Buy-Ins */}
       <TableCell>
         <Input
-          type="number"
-          value={tempPlayer?.buyIns || ""}
-          onChange={(e) => handleChange("buyIns", e.target.value)}
+          type="text"
+          inputMode="decimal"
+          value={tempPlayer?.buyIns.toString() || ""}
+          onChange={(e) => {
+            const value = e.target.value;
+            if (/^-?\d*\.?\d*$/.test(value) || value === "") {
+              handleChange("buyIns", value);
+            }
+          }}
           className="border p-1 w-full"
         />
       </TableCell>
 
-      {/* Editable Gains/Losses */}
       <TableCell>
         <Input
-          type="number"
-          value={tempPlayer?.gains || ""}
-          onChange={(e) => handleChange("gains", e.target.value)}
+          type="text"
+          inputMode="decimal"
+          value={tempPlayer?.gains.toString() || ""}
+          onChange={(e) => {
+            const value = e.target.value;
+            if (/^-?\d*\.?\d*$/.test(value) || value === "") {
+              handleChange("gains", value);
+            }
+          }}
           className="border p-1 w-full"
         />
       </TableCell>
 
-      {/* Profit Calculation */}
       <TableCell>
-        {(tempPlayer?.buyIns || 0) + (tempPlayer?.gains || 0)}
+        {(parseFloat(tempPlayer?.buyIns.toString() || "0") || 0) +
+          (parseFloat(tempPlayer?.gains.toString() || "0") || 0)}
       </TableCell>
 
-      {/* Save Button */}
       <TableCell>
         <Button variant="default" onClick={handleSave}>
           Save
