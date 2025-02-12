@@ -4,6 +4,7 @@ import GameTable from "./components/GameTable";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
+import { Label } from "@/components/ui/label";
 
 export default function NewGamePage() {
   const [name, setName] = useState("");
@@ -49,9 +50,9 @@ export default function NewGamePage() {
         <form>
           <div className="grid gap-4 py-4">
             <div className="grid grid-cols-4 items-center gap-4">
-              <label htmlFor="name" className="text-right">
+              <Label htmlFor="name" className="text-right">
                 Name
-              </label>
+              </Label>
               <Input
                 id="name"
                 className="col-span-3"
@@ -62,7 +63,9 @@ export default function NewGamePage() {
               />
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
-              <label htmlFor="buyIns">Buy Ins</label>
+              <Label htmlFor="buyIns" className="text-right">
+                Buy Ins
+              </Label>
               <Input
                 id="buyIns"
                 type="number"
@@ -74,7 +77,9 @@ export default function NewGamePage() {
               />
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
-              <label htmlFor="gainslosses">Gains/Losses</label>
+              <Label htmlFor="gainslosses" className="text-right">
+                Gains/Losses
+              </Label>
               <Input
                 id="gainslosses"
                 type="number"
