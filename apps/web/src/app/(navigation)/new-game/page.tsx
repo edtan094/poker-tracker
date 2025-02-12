@@ -6,24 +6,34 @@ import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
 import { Label } from "@/components/ui/label";
 
+export type Player = { name: string; buyIns: number; gains: number };
+
 export default function NewGamePage() {
   const [name, setName] = useState("");
-  const [buyIns, setBuyIns] = useState<number>(0);
-  const [gainsLosses, setGainsLosses] = useState<number>(0);
-  const [players, setPlayers] = useState<
-    { name: string; buyIns: number; gainsLosses: number }[]
-  >([]);
+  const [buyIns, setBuyIns] = useState<string>("");
+  const [gains, setGains] = useState<string>("");
+  const [players, setPlayers] = useState<Player[]>([]);
 
   const handleSubmit = (e: any) => {
     e.preventDefault();
-    setPlayers([...players, { name, buyIns, gainsLosses }]);
+    setPlayers([
+      ...players,
+      { name, buyIns: parseFloat(buyIns) || 0, gains: parseFloat(gains) || 0 },
+    ]);
     setName("");
-    setBuyIns(0);
-    setGainsLosses(0);
+    setBuyIns("");
+    setGains("");
 
     localStorage.setItem(
       "players",
-      JSON.stringify([...players, { name, buyIns, gainsLosses }])
+      JSON.stringify([
+        ...players,
+        {
+          name,
+          buyIns: parseFloat(buyIns) || 0,
+          gains: parseFloat(gains) || 0,
+        },
+      ])
     );
   };
 
@@ -57,6 +67,7 @@ export default function NewGamePage() {
                 id="name"
                 className="col-span-3"
                 name="name"
+                type="text"
                 required
                 onChange={(e) => setName(e.target.value)}
                 value={name}
@@ -72,24 +83,34 @@ export default function NewGamePage() {
                 name="buyIns"
                 required
                 className="col-span-3"
-                onChange={(e) => setBuyIns(Number(e.target.value || undefined))}
+                onChange={(e) => setBuyIns(e.target.value)}
                 value={buyIns}
               />
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="gainslosses" className="text-right">
-                Gains/Losses
+              <Label htmlFor="gains" className="text-right">
+                {+gains >= 0 ? (
+                  <span>Gains</span>
+                ) : (
+                  <span className="ml-2 text-destructive">Loss</span>
+                )}
               </Label>
               <Input
-                id="gainslosses"
-                type="number"
-                name="gainslosses"
+                id="gains"
+                type="text"
+                name="gains"
                 required
                 className="col-span-3"
-                onChange={(e) =>
-                  setGainsLosses(Number(e.target.value || undefined))
-                }
-                value={gainsLosses}
+                pattern="-?[0-9]*\.?[0-9]*"
+                onChange={(e) => {
+                  const value = e.target.value;
+
+                  // Allow only numbers, optional negative sign, and a single decimal
+                  if (/^-?\d*\.?\d*$/.test(value) || value === "") {
+                    setGains(value);
+                  }
+                }}
+                value={gains}
               />
             </div>
           </div>
@@ -99,7 +120,11 @@ export default function NewGamePage() {
         </form>
 
         <div>
-          <GameTable players={players} handleDelete={handleDelete} />
+          <GameTable
+            players={players}
+            handleDelete={handleDelete}
+            setPlayers={setPlayers}
+          />
         </div>
         <div className=" border-t mt-4 pt-4">
           <p>Total Buy Ins: ${totalBuyIns}</p>
