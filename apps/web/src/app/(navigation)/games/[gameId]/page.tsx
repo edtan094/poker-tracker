@@ -35,42 +35,6 @@ export default function NewGamePage({
   const [allPlayers, setAllPlayers] = useState<Player[]>([]);
   const [isNewPlayer, setIsNewPlayer] = useState(true);
 
-  //   const handleSubmit = (e: any) => {
-  //     e.preventDefault();
-  //     setPlayers([
-  //       ...players,
-  //       { name, buyIns: parseFloat(buyIns) || 0, gains: parseFloat(gains) || 0 },
-  //     ]);
-  //     setName("");
-  //     setBuyIns("");
-  //     setGains("");
-
-  //     localStorage.setItem(
-  //       "players",
-  //       JSON.stringify([
-  //         ...players,
-  //         {
-  //           name,
-  //           buyIns: parseFloat(buyIns) || 0,
-  //           gains: parseFloat(gains) || 0,
-  //         },
-  //       ])
-  //     );
-  //   };
-
-  //   const handleDelete = (index: number) => {
-  //     const newPlayers = players.filter((player, i) => i !== index);
-  //     setPlayers(newPlayers);
-  //     localStorage.setItem("players", JSON.stringify(newPlayers));
-  //   };
-
-  //   useEffect(() => {
-  //     const playersLocalStorage = localStorage.getItem("players");
-  //     if (playersLocalStorage) {
-  //       setPlayers(JSON.parse(playersLocalStorage));
-  //     }
-  //   }, []);
-
   const toggleExistingOrNewPlayer = () => {
     setIsNewPlayer(!isNewPlayer);
   };
