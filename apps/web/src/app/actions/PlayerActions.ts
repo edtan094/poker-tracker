@@ -11,13 +11,12 @@ export async function getPlayers() {
 export async function addPlayer(
   name: string,
   buyIns: number | Decimal,
-  gains: number | Decimal,
-  gameId: string
+  gains: number | Decimal
 ) {
   const newPlayer = await prisma.player.create({
     data: { name, buyIns, gains },
   });
-  revalidatePath(`/games/${gameId}`);
+  revalidatePath(`/games/new-game`);
 
   return newPlayer;
 }
