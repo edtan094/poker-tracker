@@ -1,7 +1,6 @@
 "use server";
 
 import { prisma } from "@/lib/prisma";
-import { Player } from "@prisma/client";
 import { Decimal } from "@prisma/client/runtime/library";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
@@ -9,18 +8,31 @@ import { redirect } from "next/navigation";
 export async function createGame(
   players: { id: string; buyIns: number; gains: number }[]
 ) {
-  const game = await prisma.game.create({ data: {} });
+  const game = await prisma.$transaction(async (prisma) => {
+    const game = await prisma.game.create({ data: {} });
 
-  await prisma.playerGame.createMany({
-    data: players.map(({ id, buyIns, gains }) => ({
-      gameId: game.id,
-      playerId: id,
-      buyIns: new Decimal(buyIns),
-      gains: new Decimal(gains),
-      netProfit: new Decimal(gains - buyIns),
-    })),
+    await prisma.playerGame.createMany({
+      data: players.map(({ id, buyIns, gains }) => ({
+        gameId: game.id,
+        playerId: id,
+        buyIns: new Decimal(buyIns),
+        gains: new Decimal(gains),
+        netProfit: new Decimal(gains - buyIns),
+      })),
+    });
+
+    for (const { id, buyIns, gains } of players) {
+      await prisma.player.update({
+        where: { id },
+        data: {
+          buyIns: { increment: new Decimal(buyIns) },
+          gains: { increment: new Decimal(gains) },
+        },
+      });
+    }
+
+    return game;
   });
-
   redirect(`/games/new-game/${game.id}`);
 }
 

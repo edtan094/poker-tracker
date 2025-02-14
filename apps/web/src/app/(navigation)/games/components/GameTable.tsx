@@ -9,8 +9,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Player } from "../page";
 import { Input } from "@/components/ui/input";
+import { Player } from "@prisma/client";
 
 type GameTableProps = {
   players: Player[];
@@ -95,9 +95,9 @@ export default function GameTable({
               <>
                 {/* Regular row display when not editing */}
                 <TableCell>{player.name}</TableCell>
-                <TableCell>{player.buyIns}</TableCell>
-                <TableCell>{player.gains}</TableCell>
-                <TableCell>{player.buyIns + player.gains}</TableCell>
+                <TableCell>{+player.buyIns}</TableCell>
+                <TableCell>{+player.gains}</TableCell>
+                <TableCell>{+player.buyIns + +player.gains}</TableCell>
                 <TableCell>
                   <Button
                     variant="destructive"
