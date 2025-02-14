@@ -48,27 +48,54 @@ export default function NewGamePage() {
         parseFloat(gains) || 0
       );
 
-      setPlayers([
-        ...players,
-        {
-          ...newPlayer,
-          buyIns: parseFloat(buyIns),
-          gains: parseFloat(gains) || 0,
-        },
-      ]);
+      setPlayers((prevState) => {
+        localStorage.setItem(
+          "players",
+          JSON.stringify([
+            ...prevState,
+            {
+              name,
+              buyIns: parseFloat(buyIns) || 0,
+              gains: parseFloat(gains) || 0,
+            },
+          ])
+        );
+        return [
+          ...prevState,
+          {
+            ...newPlayer,
+            buyIns: parseFloat(buyIns),
+            gains: parseFloat(gains) || 0,
+          },
+        ];
+      });
     } else {
       const player = allPlayers.find(
         (player) => player.id === existingPlayerId
       );
       if (player) {
-        setPlayers([
-          ...players,
-          {
-            ...player,
-            buyIns: parseFloat(buyIns),
-            gains: parseFloat(gains) || 0,
-          },
-        ]);
+        setPlayers(() => {
+          localStorage.setItem(
+            "players",
+            JSON.stringify([
+              ...players,
+              {
+                id: player.id,
+                name: player.name,
+                buyIns: parseFloat(buyIns) || 0,
+                gains: parseFloat(gains) || 0,
+              },
+            ])
+          );
+          return [
+            ...players,
+            {
+              ...player,
+              buyIns: parseFloat(buyIns),
+              gains: parseFloat(gains) || 0,
+            },
+          ];
+        });
       }
     }
 
@@ -83,7 +110,7 @@ export default function NewGamePage() {
     setPlayers((prevPlayers) => {
       const newPlayers = [...prevPlayers];
       newPlayers.splice(index, 1);
-
+      localStorage.setItem("players", JSON.stringify(newPlayers));
       return newPlayers;
     });
   };
@@ -103,6 +130,13 @@ export default function NewGamePage() {
     }
 
     fetchAllPlayers();
+  }, []);
+
+  useEffect(() => {
+    const playersLocalStorage = localStorage.getItem("players");
+    if (playersLocalStorage) {
+      setPlayers(JSON.parse(playersLocalStorage));
+    }
   }, []);
 
   return (
