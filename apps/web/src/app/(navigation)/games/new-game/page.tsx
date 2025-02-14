@@ -15,6 +15,7 @@ import {
 import { addPlayer, getPlayers } from "@/app/actions/PlayerActions";
 import { Switch } from "@/components/ui/switch";
 import { Player } from "@prisma/client";
+import { cache } from "@/lib/cache";
 
 export default function NewGamePage() {
   const [name, setName] = useState("");
@@ -108,7 +109,7 @@ export default function NewGamePage() {
 
   useEffect(() => {
     async function fetchAllPlayers() {
-      const data = await getPlayers();
+      const data = await getPlayersCache();
       const players = data.map((player) => ({
         id: player.id,
         name: player.name,
