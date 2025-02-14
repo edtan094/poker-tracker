@@ -4,11 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
 import { Label } from "@/components/ui/label";
-import {
-  addPlayerToGame,
-  createGame,
-  getPlayersByGame,
-} from "@/app/actions/GameActions";
+import { createGame } from "@/app/actions/GameActions";
 import {
   Select,
   SelectContent,
@@ -17,15 +13,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { addPlayer, getPlayers } from "@/app/actions/PlayerActions";
-import { Decimal } from "@prisma/client/runtime/library";
 import { Switch } from "@/components/ui/switch";
-
-export type Player = {
-  id: string;
-  name: string;
-  buyIns: Decimal | number;
-  gains: Decimal | number;
-};
+import { Player } from "@prisma/client";
 
 export default function NewGamePage() {
   const [name, setName] = useState("");
@@ -234,7 +223,7 @@ export default function NewGamePage() {
         <p>Total Buy Ins: ${totalBuyIns}</p>
       </div>
       <div className="mt-4">
-        <form action={createGame}>
+        <form action={async () => await createGame(players)}>
           <Button variant="default" type="submit">
             Save Game
           </Button>
