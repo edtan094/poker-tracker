@@ -109,7 +109,7 @@ export default function NewGamePage() {
 
   useEffect(() => {
     async function fetchAllPlayers() {
-      const data = await getPlayersCache();
+      const data = await getPlayers();
       const players = data.map((player) => ({
         id: player.id,
         name: player.name,
