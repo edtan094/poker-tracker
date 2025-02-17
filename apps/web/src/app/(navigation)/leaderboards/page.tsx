@@ -30,7 +30,6 @@ export default async function LeaderboardsPage() {
               <TableHead>Player</TableHead>
               <TableHead>Buy Ins</TableHead>
               <TableHead>Gains</TableHead>
-              <TableHead>Profit</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -40,7 +39,6 @@ export default async function LeaderboardsPage() {
                 <TableCell>{player.name}</TableCell>
                 <TableCell>{+player.buyIns}</TableCell>
                 <TableCell>{+player.gains}</TableCell>
-                <TableCell>{+player.buyIns + +player.gains}</TableCell>
               </TableRow>
             ))}
           </TableBody>
