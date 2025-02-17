@@ -12,10 +12,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { addPlayer, getPlayers } from "@/app/actions/PlayerActions";
+import { addPlayer, handleGetPlayers } from "@/app/actions/PlayerActions";
 import { Switch } from "@/components/ui/switch";
 import { Player } from "@prisma/client";
-import { cache } from "@/lib/cache";
 
 export default function NewGamePage() {
   const [name, setName] = useState("");
@@ -109,7 +108,7 @@ export default function NewGamePage() {
 
   useEffect(() => {
     async function fetchAllPlayers() {
-      const data = await getPlayers();
+      const data = await handleGetPlayers();
       const players = data.map((player) => ({
         id: player.id,
         name: player.name,
@@ -120,7 +119,7 @@ export default function NewGamePage() {
     }
 
     fetchAllPlayers();
-  }, []);
+  }, [players.length]);
 
   useEffect(() => {
     const playersLocalStorage = localStorage.getItem("players");
