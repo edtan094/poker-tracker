@@ -1,12 +1,21 @@
 "use server";
 
+import { cache } from "@/lib/cache";
 import { prisma } from "@/lib/prisma";
 import { Decimal } from "@prisma/client/runtime/library";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 
-export async function getPlayers() {
+async function getPlayers() {
   return await prisma.player.findMany();
 }
+
+export const handleGetPlayers = cache(
+  () => {
+    return getPlayers();
+  },
+  ["/players"],
+  { revalidate: false }
+);
 
 export async function addPlayer(
   name: string,
@@ -17,6 +26,7 @@ export async function addPlayer(
     data: { name, buyIns, gains },
   });
   revalidatePath(`/games/new-game`);
+  revalidateTag("/players");
 
   return newPlayer;
 }

@@ -20,7 +20,7 @@ export async function createGame(
       })),
     });
 
-    for (const { id, gains, buyIns } of players) {
+    for (const { id, gains } of players) {
       await prisma.player.update({
         where: { id },
         data: {
@@ -49,7 +49,7 @@ export async function addPlayerToGame(
       netProfit: new Decimal(0),
     },
   });
-  revalidatePath(`/games/${gameId}`);
+  revalidatePath("/games/new-game");
 }
 
 export async function updatePlayerScore(

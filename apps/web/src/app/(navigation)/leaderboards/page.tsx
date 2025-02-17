@@ -1,4 +1,4 @@
-import { getPlayers } from "@/app/actions/PlayerActions";
+import { handleGetPlayers } from "@/app/actions/PlayerActions";
 import {
   Table,
   TableBody,
@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/table";
 
 export default async function LeaderboardsPage() {
-  const allPlayers = await getPlayers();
+  const allPlayers = await handleGetPlayers();
 
   const sortPlayersByHighestProfit = () => {
     return allPlayers.sort((a, b) => {
