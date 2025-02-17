@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Table,
@@ -74,7 +74,6 @@ export default function GameTable({
           <TableHead>Player</TableHead>
           <TableHead>Buy Ins</TableHead>
           <TableHead>Gains</TableHead>
-          <TableHead>Profit</TableHead>
           <TableHead>Actions</TableHead>
         </TableRow>
       </TableHeader>
@@ -97,7 +96,6 @@ export default function GameTable({
                 <TableCell>{player.name}</TableCell>
                 <TableCell>{+player.buyIns}</TableCell>
                 <TableCell>{+player.gains}</TableCell>
-                <TableCell>{+player.buyIns + +player.gains}</TableCell>
                 <TableCell>
                   <Button
                     variant="destructive"
@@ -167,11 +165,6 @@ function EditGameRow({
           }}
           className="border p-1 w-full"
         />
-      </TableCell>
-
-      <TableCell>
-        {(parseFloat(tempPlayer?.buyIns.toString() || "0") || 0) +
-          (parseFloat(tempPlayer?.gains.toString() || "0") || 0)}
       </TableCell>
 
       <TableCell>
