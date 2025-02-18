@@ -31,28 +31,23 @@ export default function GameTable({
     setTempPlayer({ ...players[index] });
   };
 
-  const handleSave = () => {
-    if (tempPlayer !== null && editingIndex !== null) {
-      handleUpdate(editingIndex, tempPlayer);
+  const handleChange = (index: number, field: keyof Player, value: string) => {
+    setPlayers((prevPlayers) => {
+      const newPlayers = prevPlayers.map((player, i) =>
+        i === index
+          ? {
+              ...player,
+              [field]:
+                field === "buyIns" || field === "gains"
+                  ? parseFloat(value) || 0
+                  : value,
+            }
+          : player
+      );
 
-      //  Ensure the UI updates after save
-      setTimeout(() => {
-        setEditingIndex(null);
-        setTempPlayer(null);
-      }, 0);
-    }
-  };
-
-  const handleChange = (field: keyof Player, value: string) => {
-    if (tempPlayer) {
-      setTempPlayer({
-        ...tempPlayer,
-        [field]:
-          field === "buyIns" || field === "gains"
-            ? parseFloat(value) || 0
-            : value,
-      });
-    }
+      localStorage.setItem("players", JSON.stringify(newPlayers)); // ✅ Save to localStorage
+      return newPlayers;
+    });
   };
 
   const handleUpdate = (index: number, updatedPlayer: Player) => {
@@ -79,36 +74,38 @@ export default function GameTable({
       </TableHeader>
       <TableBody>
         {players.map((player, index) => (
-          <TableRow
-            key={index}
-            onClick={() => handleEdit(index)}
-            className="cursor-pointer"
-          >
-            {editingIndex === index ? (
-              <EditGameRow
-                tempPlayer={tempPlayer}
-                handleChange={handleChange}
-                handleSave={handleSave}
+          <TableRow key={index}>
+            <TableCell>
+              <Input
+                type="text"
+                value={player.name}
+                onChange={(e) => handleChange(index, "name", e.target.value)}
+                className="border p-1 w-full"
               />
-            ) : (
-              <>
-                {/* Regular row display when not editing */}
-                <TableCell>{player.name}</TableCell>
-                <TableCell>{+player.buyIns}</TableCell>
-                <TableCell>{+player.gains}</TableCell>
-                <TableCell>
-                  <Button
-                    variant="destructive"
-                    onClick={(e) => {
-                      e.stopPropagation(); // Prevent row click from triggering edit
-                      handleDelete(index);
-                    }}
-                  >
-                    Delete
-                  </Button>
-                </TableCell>
-              </>
-            )}
+            </TableCell>
+            <TableCell>
+              <Input
+                type="text"
+                inputMode="decimal"
+                value={player.buyIns.toString()}
+                onChange={(e) => handleChange(index, "buyIns", e.target.value)}
+                className="border p-1 w-full"
+              />
+            </TableCell>
+            <TableCell>
+              <Input
+                type="text"
+                inputMode="decimal"
+                value={player.gains.toString()}
+                onChange={(e) => handleChange(index, "gains", e.target.value)}
+                className="border p-1 w-full"
+              />
+            </TableCell>
+            <TableCell>
+              <Button variant="destructive" onClick={() => handleDelete(index)}>
+                Delete
+              </Button>
+            </TableCell>
           </TableRow>
         ))}
       </TableBody>
@@ -167,11 +164,11 @@ function EditGameRow({
         />
       </TableCell>
 
-      <TableCell>
+      {/* <TableCell>
         <Button variant="default" onClick={handleSave}>
           Save
         </Button>
-      </TableCell>
+      </TableCell> */}
     </>
   );
 }
