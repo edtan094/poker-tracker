@@ -52,6 +52,7 @@ export async function addPlayerToGame(
     },
   });
   revalidatePath("/games/new-game");
+  revalidatePath("/leaderboards");
 }
 
 export async function updatePlayerScore(
