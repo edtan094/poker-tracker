@@ -24,6 +24,7 @@ export default function NewGamePage() {
   const [players, setPlayers] = useState<Player[]>([]);
   const [allPlayers, setAllPlayers] = useState<Player[]>([]);
   const [isNewPlayer, setIsNewPlayer] = useState(true);
+  const [loading, setIsLoading] = useState(false);
 
   const toggleExistingOrNewPlayer = () => {
     setIsNewPlayer(!isNewPlayer);
@@ -102,6 +103,17 @@ export default function NewGamePage() {
       localStorage.setItem("players", JSON.stringify(newPlayers));
       return newPlayers;
     });
+  };
+
+  const handleCreateGame = async () => {
+    setIsLoading(true);
+    await createGame(players)
+      .then(() => {
+        setIsLoading(false);
+      })
+      .catch(() => {
+        setIsLoading(false);
+      });
   };
 
   const totalBuyIns = players.reduce((acc, player) => acc + player.buyIns, 0);
@@ -223,9 +235,9 @@ export default function NewGamePage() {
         <p>Total Buy Ins: ${totalBuyIns}</p>
       </div>
       <div className="mt-4">
-        <form action={async () => await createGame(players)}>
+        <form action={handleCreateGame}>
           <Button variant="default" type="submit">
-            Save Game
+            {loading ? "Saving Game..." : "Save Game"}
           </Button>
         </form>
       </div>
