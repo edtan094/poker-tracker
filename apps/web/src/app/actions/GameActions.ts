@@ -31,7 +31,7 @@ export async function createGame(
 
     return game;
   });
-  revalidateTag("/players");
+  revalidateTag("players");
   redirect(`/games/new-game/${game.id}`);
 }
 
