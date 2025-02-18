@@ -7,10 +7,12 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { revalidateTag } from "next/cache";
 
 export const dynamic = "force-dynamic";
 
 export default async function LeaderboardsPage() {
+  revalidateTag("/players");
   const allPlayers = await handleGetPlayers();
 
   const sortPlayersByHighestProfit = () => {
@@ -28,19 +30,19 @@ export default async function LeaderboardsPage() {
             <TableRow>
               <TableHead>Place</TableHead>
               <TableHead>Player</TableHead>
-              <TableHead>Buy Ins</TableHead>
               <TableHead>Gains</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {sortPlayersByHighestProfit().map((player, index) => (
-              <TableRow key={player.id}>
-                <TableCell>{index + 1}</TableCell>
-                <TableCell>{player.name}</TableCell>
-                <TableCell>{+player.buyIns}</TableCell>
-                <TableCell>{+player.gains}</TableCell>
-              </TableRow>
-            ))}
+            {sortPlayersByHighestProfit().map((player, index) => {
+              return (
+                <TableRow key={player.id}>
+                  <TableCell>{index + 1}</TableCell>
+                  <TableCell>{player.name}</TableCell>
+                  <TableCell>{+player.gains}</TableCell>
+                </TableRow>
+              );
+            })}
           </TableBody>
         </Table>
       </div>
