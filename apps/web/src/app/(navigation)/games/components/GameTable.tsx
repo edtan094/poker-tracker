@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Table,
@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/table";
 import { Input } from "@/components/ui/input";
 import { Player } from "@prisma/client";
+import { debounce } from "lodash";
 
 type GameTableProps = {
   players: Player[];
@@ -23,6 +24,14 @@ export default function GameTable({
   handleDelete,
   setPlayers,
 }: GameTableProps) {
+  const debouncedUpdate = useCallback(
+    debounce((newPlayers) => {
+      localStorage.setItem("players", JSON.stringify(newPlayers));
+      setPlayers(newPlayers);
+    }, 500),
+    []
+  );
+
   const handleChange = (index: number, field: keyof Player, value: string) => {
     setPlayers((prevPlayers) => {
       const newPlayers = prevPlayers.map((player, i) =>
@@ -37,19 +46,7 @@ export default function GameTable({
           : player
       );
 
-      localStorage.setItem("players", JSON.stringify(newPlayers)); // ✅ Save to localStorage
-      return newPlayers;
-    });
-  };
-
-  const handleUpdate = (index: number, updatedPlayer: Player) => {
-    setPlayers((prevPlayers) => {
-      const newPlayers = prevPlayers.map((player, i) =>
-        i === index ? updatedPlayer : player
-      );
-
-      localStorage.setItem("players", JSON.stringify(newPlayers));
-
+      debouncedUpdate(newPlayers);
       return newPlayers;
     });
   };
@@ -102,59 +99,5 @@ export default function GameTable({
         ))}
       </TableBody>
     </Table>
-  );
-}
-
-type EditGameRowProps = {
-  tempPlayer: Player | null;
-  handleChange: (field: keyof Player, value: string) => void;
-  handleSave: () => void;
-};
-
-function EditGameRow({
-  tempPlayer,
-  handleChange,
-  handleSave,
-}: EditGameRowProps) {
-  return (
-    <>
-      <TableCell>
-        <Input
-          type="text"
-          value={tempPlayer?.name || ""}
-          onChange={(e) => handleChange("name", e.target.value)}
-          className="border p-1 w-full"
-        />
-      </TableCell>
-
-      <TableCell>
-        <Input
-          type="text"
-          inputMode="decimal"
-          value={tempPlayer?.buyIns.toString() || ""}
-          onChange={(e) => {
-            const value = e.target.value;
-            if (/^-?\d*\.?\d*$/.test(value) || value === "") {
-              handleChange("buyIns", value);
-            }
-          }}
-          className="border p-1 w-full"
-        />
-      </TableCell>
-
-      <TableCell>
-        <Input
-          type="text"
-          value={tempPlayer?.gains.toString() || ""}
-          onChange={(e) => {
-            const value = e.target.value;
-            if (/^-?\d*\.?\d*$/.test(value) || value === "") {
-              handleChange("gains", value);
-            }
-          }}
-          className="border p-1 w-full"
-        />
-      </TableCell>
-    </>
   );
 }
