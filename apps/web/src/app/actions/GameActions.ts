@@ -19,7 +19,7 @@ export async function createGame(
         gains: new Decimal(gains),
       })),
     });
-    console.log("players", players);
+
     for (const { id, gains } of players) {
       await prisma.player.update({
         where: { id },
