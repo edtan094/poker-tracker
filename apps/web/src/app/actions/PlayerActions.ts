@@ -13,7 +13,7 @@ export const handleGetPlayers = cache(
   () => {
     return getPlayers();
   },
-  ["/players"],
+  ["players"],
   { revalidate: false }
 );
 

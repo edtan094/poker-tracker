@@ -7,12 +7,10 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { revalidateTag } from "next/cache";
 
 export const dynamic = "force-dynamic";
 
 export default async function LeaderboardsPage() {
-  revalidateTag("/players");
   const allPlayers = await handleGetPlayers();
 
   const sortPlayersByHighestProfit = () => {
