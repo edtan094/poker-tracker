@@ -8,7 +8,7 @@ import { redirect } from "next/navigation";
 export async function createGame(
   players: { id: string; buyIns: number; gains: number }[]
 ) {
-  const game = await prisma.$transaction(async (prisma) => {
+  return await prisma.$transaction(async (prisma) => {
     const game = await prisma.game.create({ data: {} });
 
     await prisma.playerGame.createMany({
@@ -20,20 +20,25 @@ export async function createGame(
       })),
     });
 
-    for (const { id, gains } of players) {
+    for (const { id } of players) {
+      const totalGains = await prisma.playerGame.aggregate({
+        where: { playerId: id },
+        _sum: { gains: true },
+      });
+
       await prisma.player.update({
         where: { id },
         data: {
-          gains: { increment: new Decimal(gains) },
+          gains: new Decimal(totalGains._sum.gains || 0),
         },
       });
     }
 
-    return game;
+    revalidateTag("players");
+    revalidatePath("/leaderboards");
+
+    redirect(`/games/new-game/${game.id}`);
   });
-  revalidateTag("players");
-  revalidatePath("/leaderboards");
-  redirect(`/games/new-game/${game.id}`);
 }
 
 export async function addPlayerToGame(
