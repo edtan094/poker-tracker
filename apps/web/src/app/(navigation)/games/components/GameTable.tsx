@@ -23,14 +23,6 @@ export default function GameTable({
   handleDelete,
   setPlayers,
 }: GameTableProps) {
-  const [editingIndex, setEditingIndex] = useState<number | null>(null);
-  const [tempPlayer, setTempPlayer] = useState<Player | null>(null);
-
-  const handleEdit = (index: number) => {
-    setEditingIndex(index);
-    setTempPlayer({ ...players[index] });
-  };
-
   const handleChange = (index: number, field: keyof Player, value: string) => {
     setPlayers((prevPlayers) => {
       const newPlayers = prevPlayers.map((player, i) =>
@@ -163,12 +155,6 @@ function EditGameRow({
           className="border p-1 w-full"
         />
       </TableCell>
-
-      {/* <TableCell>
-        <Button variant="default" onClick={handleSave}>
-          Save
-        </Button>
-      </TableCell> */}
     </>
   );
 }
