@@ -32,6 +32,7 @@ export async function createGame(
     return game;
   });
   revalidateTag("players");
+  revalidatePath("/leaderboards");
   redirect(`/games/new-game/${game.id}`);
 }
 
@@ -72,6 +73,7 @@ export async function updatePlayerScore(
   });
 
   revalidatePath(`/games/${gameId}`);
+  revalidateTag("players");
 }
 
 export async function getPlayersByGame(gameId: string) {

@@ -7,17 +7,18 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { prisma } from "@/lib/prisma";
+
+import { cache } from "@/lib/cache";
 
 export const dynamic = "force-dynamic";
 
-export default async function LeaderboardsPage() {
-  const allPlayers = await handleGetPlayers();
+const getAllPlayersByGains = cache(async () => {
+  return await prisma.player.findMany({ orderBy: { gains: "desc" } });
+}, ["/leaderboards"]);
 
-  const sortPlayersByHighestProfit = () => {
-    return allPlayers.sort((a, b) => {
-      return +b.buyIns + +b.gains - (+a.buyIns + +a.gains);
-    });
-  };
+export default async function LeaderboardsPage() {
+  const allPlayers = await getAllPlayersByGains();
   return (
     <div>
       <h1>Leaderboards</h1>
@@ -32,7 +33,7 @@ export default async function LeaderboardsPage() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {sortPlayersByHighestProfit().map((player, index) => {
+            {allPlayers.map((player, index) => {
               return (
                 <TableRow key={player.id}>
                   <TableCell>{index + 1}</TableCell>
