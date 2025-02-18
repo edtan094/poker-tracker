@@ -13,9 +13,13 @@ import { cache } from "@/lib/cache";
 
 export const dynamic = "force-dynamic";
 
-const getAllPlayersByGains = cache(async () => {
-  return await prisma.player.findMany({ orderBy: { gains: "desc" } });
-}, ["/leaderboards"]);
+const getAllPlayersByGains = cache(
+  async () => {
+    return await prisma.player.findMany({ orderBy: { gains: "desc" } });
+  },
+  ["/leaderboards"],
+  { revalidate: 60 }
+);
 
 export default async function LeaderboardsPage() {
   const allPlayers = await getAllPlayersByGains();
