@@ -15,6 +15,7 @@ import {
 import { addPlayer, handleGetPlayers } from "@/app/actions/PlayerActions";
 import { Switch } from "@/components/ui/switch";
 import { Player } from "@prisma/client";
+import { set } from "lodash";
 
 export default function NewGamePage() {
   const [name, setName] = useState("");
@@ -25,13 +26,24 @@ export default function NewGamePage() {
   const [allPlayers, setAllPlayers] = useState<Player[]>([]);
   const [isNewPlayer, setIsNewPlayer] = useState(true);
   const [loading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
 
   const toggleExistingOrNewPlayer = () => {
     setIsNewPlayer(!isNewPlayer);
   };
 
   const handleSubmit = async () => {
+    setError("");
     if (isNewPlayer) {
+      const isExistingPlayer = allPlayers.find(
+        (player) => player.name === name
+      );
+      if (isExistingPlayer) {
+        setError(
+          "Player already exists. Please chose a different name or an existing player."
+        );
+        return;
+      }
       const newPlayer = await addPlayer(
         name,
         parseFloat(buyIns),
@@ -221,6 +233,7 @@ export default function NewGamePage() {
           <Button variant="default" type="submit">
             Submit
           </Button>
+          {error && <p className="text-destructive mt-2">{error}</p>}
         </form>
       </div>
 
