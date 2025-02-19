@@ -2,7 +2,7 @@
 
 import { prisma } from "@/lib/prisma";
 import { Decimal } from "@prisma/client/runtime/library";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import { redirect } from "next/navigation";
 
 export async function createGame(
@@ -20,17 +20,24 @@ export async function createGame(
       })),
     });
 
-    for (const { id, gains } of players) {
-      await prisma.player.update({
+    for (const { id } of players) {
+      const totalGains = await prisma.playerGame.aggregate({
+        where: { playerId: id },
+        _sum: { gains: true },
+      });
+
+      const updatedPlayer = await prisma.player.update({
         where: { id },
         data: {
-          gains: { increment: new Decimal(gains) },
+          gains: new Decimal(totalGains._sum.gains || 0),
         },
       });
     }
 
     return game;
   });
+  revalidateTag("players");
+  revalidatePath("/leaderboards");
   redirect(`/games/new-game/${game.id}`);
 }
 
@@ -50,6 +57,7 @@ export async function addPlayerToGame(
     },
   });
   revalidatePath("/games/new-game");
+  revalidatePath("/leaderboards");
 }
 
 export async function updatePlayerScore(
@@ -71,6 +79,7 @@ export async function updatePlayerScore(
   });
 
   revalidatePath(`/games/${gameId}`);
+  revalidateTag("players");
 }
 
 export async function getPlayersByGame(gameId: string) {

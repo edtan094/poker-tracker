@@ -7,17 +7,22 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { prisma } from "@/lib/prisma";
+
+import { cache } from "@/lib/cache";
 
 export const dynamic = "force-dynamic";
 
-export default async function LeaderboardsPage() {
-  const allPlayers = await handleGetPlayers();
+const getAllPlayersByGains = cache(
+  async () => {
+    return await prisma.player.findMany({ orderBy: { gains: "desc" } });
+  },
+  ["/leaderboards"],
+  { revalidate: 60 }
+);
 
-  const sortPlayersByHighestProfit = () => {
-    return allPlayers.sort((a, b) => {
-      return +b.buyIns + +b.gains - (+a.buyIns + +a.gains);
-    });
-  };
+export default async function LeaderboardsPage() {
+  const allPlayers = await getAllPlayersByGains();
   return (
     <div>
       <h1>Leaderboards</h1>
@@ -28,21 +33,19 @@ export default async function LeaderboardsPage() {
             <TableRow>
               <TableHead>Place</TableHead>
               <TableHead>Player</TableHead>
-              <TableHead>Buy Ins</TableHead>
               <TableHead>Gains</TableHead>
-              <TableHead>Profit</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {sortPlayersByHighestProfit().map((player, index) => (
-              <TableRow key={player.id}>
-                <TableCell>{index + 1}</TableCell>
-                <TableCell>{player.name}</TableCell>
-                <TableCell>{+player.buyIns}</TableCell>
-                <TableCell>{+player.gains}</TableCell>
-                <TableCell>{+player.buyIns + +player.gains}</TableCell>
-              </TableRow>
-            ))}
+            {allPlayers.map((player, index) => {
+              return (
+                <TableRow key={player.id}>
+                  <TableCell>{index + 1}</TableCell>
+                  <TableCell>{player.name}</TableCell>
+                  <TableCell>{+player.gains}</TableCell>
+                </TableRow>
+              );
+            })}
           </TableBody>
         </Table>
       </div>
