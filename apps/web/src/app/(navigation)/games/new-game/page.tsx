@@ -44,11 +44,7 @@ export default function NewGamePage() {
         );
         return;
       }
-      const newPlayer = await addPlayer(
-        name,
-        parseFloat(buyIns),
-        parseFloat(gains) || 0
-      );
+      const newPlayer = await addPlayer(name);
 
       setPlayers((prevState) => {
         localStorage.setItem(
