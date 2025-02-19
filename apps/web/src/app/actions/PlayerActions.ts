@@ -17,13 +17,9 @@ export const handleGetPlayers = unstable_cache(
   { revalidate: false }
 );
 
-export async function addPlayer(
-  name: string,
-  buyIns: number | Decimal,
-  gains: number | Decimal
-) {
+export async function addPlayer(name: string) {
   const newPlayer = await prisma.player.create({
-    data: { name, buyIns, gains },
+    data: { name, buyIns: 0, gains: 0 },
   });
   revalidatePath(`/games/new-game`);
   revalidateTag("players");
