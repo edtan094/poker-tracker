@@ -1,7 +1,9 @@
 export default function HomePage() {
   return (
     <div>
-      <h1>Home Page</h1>
+      <div className=" flex justify-center">
+        <img src="/poker-illustrations.png" alt="Poker Illustrations" />
+      </div>
     </div>
   );
 }
