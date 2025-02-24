@@ -26,3 +26,23 @@ export async function addPlayer(name: string) {
 
   return newPlayer;
 }
+
+export async function getPlayerGamesByGameId(gameId: string) {
+  try {
+    const playerGames = await prisma.playerGame.findMany({
+      where: { gameId: gameId },
+      include: {
+        player: true,
+      },
+    });
+
+    if (!playerGames.length) {
+      throw new Error("No players found for this game.");
+    }
+
+    return playerGames;
+  } catch (error) {
+    console.error("Error fetching PlayerGames:", error.message);
+    throw new Error("Failed to fetch PlayerGames.");
+  }
+}
