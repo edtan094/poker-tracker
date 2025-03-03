@@ -38,10 +38,7 @@ export default function GameTable({
         i === index
           ? {
               ...player,
-              [field]:
-                field === "buyIns" || field === "gains"
-                  ? parseFloat(value) || 0
-                  : value,
+              [field]: (field === "buyIns" && parseFloat(value)) || 0,
             }
           : player
       );
@@ -49,6 +46,24 @@ export default function GameTable({
       debouncedUpdate(newPlayers);
       return newPlayers;
     });
+  };
+
+  const handleChangeGains = (index: number, value: string) => {
+    if (/^-?\d*\.?\d*$/.test(value) || value === "") {
+      setPlayers((prevPlayers) => {
+        const newPlayers = prevPlayers.map((player, i) =>
+          i === index
+            ? {
+                ...player,
+                gains: value,
+              }
+            : player
+        );
+
+        debouncedUpdate(newPlayers);
+        return newPlayers;
+      });
+    }
   };
 
   return (
@@ -84,9 +99,10 @@ export default function GameTable({
             <TableCell>
               <Input
                 type="text"
-                inputMode="decimal"
-                value={player.gains.toString()}
-                onChange={(e) => handleChange(index, "gains", e.target.value)}
+                value={player.gains === 0 ? "" : player.gains.toString()}
+                onChange={(e) =>
+                  handleChangeGains(index, e.target.value.toString())
+                }
                 className="border p-1 w-full"
               />
             </TableCell>
