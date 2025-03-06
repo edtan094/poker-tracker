@@ -25,6 +25,7 @@ export default function NewGamePage() {
   const [allPlayers, setAllPlayers] = useState<Player[]>([]);
   const [isNewPlayer, setIsNewPlayer] = useState(true);
   const [loading, setIsLoading] = useState(false);
+  const [playerSubmissionLoading, setPlayerSubmissionLoading] = useState(false);
   const [error, setError] = useState("");
 
   const toggleExistingOrNewPlayer = () => {
@@ -32,6 +33,8 @@ export default function NewGamePage() {
   };
 
   const handleSubmit = async () => {
+    if (playerSubmissionLoading) return;
+    setPlayerSubmissionLoading(true);
     setError("");
     if (isNewPlayer) {
       const isExistingPlayer = allPlayers.find(
@@ -101,6 +104,7 @@ export default function NewGamePage() {
     setGains("");
     setExistingPlayerId("");
     setIsNewPlayer(false);
+    setPlayerSubmissionLoading(false);
   };
 
   const handleDelete = (index: number) => {
@@ -165,75 +169,78 @@ export default function NewGamePage() {
             </Label>
           </div>
         </div>
-        <form action={handleSubmit}>
-          <div className="grid gap-4 py-4">
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="name" className="text-right">
-                Name
-              </Label>
-              {isNewPlayer ? (
-                <Input
-                  id="name"
-                  className="col-span-3"
-                  name="name"
-                  type="text"
-                  required
-                  onChange={(e) => setName(e.target.value)}
-                  value={name}
-                />
-              ) : (
-                <SelectPlayers
-                  data={allPlayers}
-                  existingPlayerId={existingPlayerId}
-                  setExistingPlayerId={setExistingPlayerId}
-                />
-              )}
-            </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="buyIns" className="text-right">
-                Buy Ins
-              </Label>
+        <div className="grid gap-4 py-4">
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="name" className="text-right">
+              Name
+            </Label>
+            {isNewPlayer ? (
               <Input
-                id="buyIns"
-                type="number"
-                name="buyIns"
-                required
+                id="name"
                 className="col-span-3"
-                onChange={(e) => setBuyIns(e.target.value)}
-                value={buyIns}
-              />
-            </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="gains" className="text-right">
-                {+gains >= 0 ? (
-                  <span>Gains</span>
-                ) : (
-                  <span className="ml-2 text-destructive">Loss</span>
-                )}
-              </Label>
-              <Input
-                id="gains"
+                name="name"
                 type="text"
-                name="gains"
-                className="col-span-3"
-                pattern="-?[0-9]*\.?[0-9]*"
-                onChange={(e) => {
-                  const value = e.target.value;
-
-                  // Allow only numbers, optional negative sign, and a single decimal
-                  if (/^-?\d*\.?\d*$/.test(value) || value === "") {
-                    setGains(value);
-                  }
-                }}
-                value={gains}
+                required
+                onChange={(e) => setName(e.target.value)}
+                value={name}
               />
-            </div>
+            ) : (
+              <SelectPlayers
+                data={allPlayers}
+                existingPlayerId={existingPlayerId}
+                setExistingPlayerId={setExistingPlayerId}
+              />
+            )}
           </div>
-          <Button variant="default" type="submit">
-            Submit
-          </Button>
-          {error && <p className="text-destructive mt-2">{error}</p>}
-        </form>
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="buyIns" className="text-right">
+              Buy Ins
+            </Label>
+            <Input
+              id="buyIns"
+              type="number"
+              name="buyIns"
+              required
+              className="col-span-3"
+              onChange={(e) => setBuyIns(e.target.value)}
+              value={buyIns}
+            />
+          </div>
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="gains" className="text-right">
+              {+gains >= 0 ? (
+                <span>Gains</span>
+              ) : (
+                <span className="ml-2 text-destructive">Loss</span>
+              )}
+            </Label>
+            <Input
+              id="gains"
+              type="text"
+              name="gains"
+              className="col-span-3"
+              pattern="-?[0-9]*\.?[0-9]*"
+              onChange={(e) => {
+                const value = e.target.value;
+
+                // Allow only numbers, optional negative sign, and a single decimal
+                if (/^-?\d*\.?\d*$/.test(value) || value === "") {
+                  setGains(value);
+                }
+              }}
+              value={gains}
+            />
+          </div>
+        </div>
+        <Button
+          variant="default"
+          type="button"
+          onClick={handleSubmit}
+          disabled={playerSubmissionLoading}
+        >
+          {playerSubmissionLoading ? "Submitting..." : "Submit"}
+        </Button>
+        {error && <p className="text-destructive mt-2">{error}</p>}
       </div>
 
       <div>
