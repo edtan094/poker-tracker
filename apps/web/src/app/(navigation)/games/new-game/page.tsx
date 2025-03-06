@@ -15,7 +15,6 @@ import {
 import { addPlayer, handleGetPlayers } from "@/app/actions/PlayerActions";
 import { Switch } from "@/components/ui/switch";
 import { Player } from "@prisma/client";
-import { set } from "lodash";
 
 export default function NewGamePage() {
   const [name, setName] = useState("");
@@ -114,14 +113,18 @@ export default function NewGamePage() {
   };
 
   const handleCreateGame = async () => {
+    if (loading) return;
     setIsLoading(true);
-    await createGame(players)
-      .then(() => {
-        setIsLoading(false);
-      })
-      .catch(() => {
-        setIsLoading(false);
-      });
+    setError("");
+
+    try {
+      await createGame(players);
+    } catch (error) {
+      console.error("Error creating game:", error);
+      setError("Failed to create game. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const totalBuyIns = players.reduce((acc, player) => acc + player.buyIns, 0);
@@ -244,11 +247,14 @@ export default function NewGamePage() {
         <p>Total Buy Ins: ${totalBuyIns}</p>
       </div>
       <div className="mt-4">
-        <form action={handleCreateGame}>
-          <Button variant="default" type="submit">
-            {loading ? "Saving Game..." : "Save Game"}
-          </Button>
-        </form>
+        <Button
+          variant="default"
+          type="button"
+          onClick={handleCreateGame}
+          disabled={loading}
+        >
+          {loading ? "Saving Game..." : "Save Game"}
+        </Button>
       </div>
     </div>
   );
