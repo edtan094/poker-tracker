@@ -9,11 +9,17 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
-export default async function NewGamePage({
-  params: { gameId },
-}: {
-  params: { gameId: string };
-}) {
+export default async function NewGamePage(
+  props: {
+    params: Promise<{ gameId: string }>;
+  }
+) {
+  const params = await props.params;
+
+  const {
+    gameId
+  } = params;
+
   const playerGames = await getPlayerGamesByGameId(gameId);
 
   return (
