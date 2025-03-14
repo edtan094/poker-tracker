@@ -28,6 +28,7 @@ export default function SubmitPlayerForm({
           JSON.stringify([
             ...prevState,
             {
+              id: state.data?.id,
               name: state.data?.name,
               buyIns: parseFloat(state.data?.buyIns) || 0,
               gains: parseFloat(state.data?.gains) || 0,
@@ -37,6 +38,7 @@ export default function SubmitPlayerForm({
         return [
           ...prevState,
           {
+            id: state.data?.id,
             name: state.data?.name,
             buyIns: parseFloat(state.data?.buyIns) || 0,
             gains: parseFloat(state.data?.gains) || 0,
@@ -61,6 +63,7 @@ export default function SubmitPlayerForm({
             minLength={1}
             required
             placeholder="Enter Name"
+            defaultValue={state.inputs?.name}
           />
           {state?.errors?.name && (
             <p id="streetAddress-error" className="text-sm text-red-500">
@@ -79,6 +82,7 @@ export default function SubmitPlayerForm({
             required
             className="col-span-3"
             placeholder="Enter Buy Ins"
+            defaultValue={state.inputs?.buyIns}
           />
           {state?.errors?.buyIns && (
             <p id="streetAddress-error" className="text-sm text-red-500">
@@ -97,6 +101,7 @@ export default function SubmitPlayerForm({
             className="col-span-3"
             pattern="-?[0-9]*\.?[0-9]*"
             placeholder="Enter Gains"
+            defaultValue={state.inputs?.gains}
           />
           {state?.errors?.gains && (
             <p id="streetAddress-error" className="text-sm text-red-500">

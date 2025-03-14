@@ -71,6 +71,7 @@ export async function submitPlayer(
         success: false,
         message: "Please fix the errors in the form",
         errors: validatedData.error.flatten().fieldErrors,
+        inputs: validatedData.data,
       };
     }
 
@@ -82,20 +83,22 @@ export async function submitPlayer(
       return {
         success: false,
         message: "Player already exists",
+        inputs: validatedData.data,
       };
     }
 
-    const newPlayer = addPlayer(validatedData.data.name);
+    const newPlayer = await addPlayer(validatedData.data.name);
 
     if (!newPlayer) {
       return {
         success: false,
         message: "Failed to save user",
+        inputs: validatedData.data,
       };
     }
 
     return {
-      data: validatedData.data,
+      data: { ...validatedData.data, id: newPlayer.id },
       success: true,
       message: "User saved successfully!",
     };

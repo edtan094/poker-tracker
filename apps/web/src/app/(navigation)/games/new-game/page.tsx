@@ -34,6 +34,12 @@ export type ActionResponse = {
     [K in keyof UserFormData]?: string[];
   };
   data?: {
+    id: string;
+    name: string;
+    buyIns?: string | undefined;
+    gains?: string | undefined;
+  };
+  inputs?: {
     name: string;
     buyIns?: string | undefined;
     gains?: string | undefined;
