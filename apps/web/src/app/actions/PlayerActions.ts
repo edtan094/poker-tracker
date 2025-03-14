@@ -4,6 +4,8 @@ import { prisma } from "@/lib/prisma";
 import { Decimal } from "@prisma/client/runtime/library";
 import { revalidatePath, revalidateTag } from "next/cache";
 import { unstable_cache } from "next/cache";
+import { ActionResponse } from "../(navigation)/games/new-game/page";
+import { z } from "zod";
 
 async function getPlayers() {
   return await prisma.player.findMany();
@@ -21,7 +23,6 @@ export async function addPlayer(name: string) {
   const newPlayer = await prisma.player.create({
     data: { name, buyIns: 0, gains: 0 },
   });
-  revalidatePath(`/games/new-game`);
   revalidateTag("players");
 
   return newPlayer;
@@ -44,5 +45,64 @@ export async function getPlayerGamesByGameId(gameId: string) {
   } catch (error) {
     console.error("Error fetching PlayerGames:", error.message);
     throw new Error("Failed to fetch PlayerGames.");
+  }
+}
+
+const playerSchema = z.object({
+  name: z.string().min(1, "Name must be at least 1 character"),
+  buyIns: z.string().optional(),
+  gains: z.string().optional(),
+});
+
+export async function submitPlayer(
+  prevState: ActionResponse | null,
+  formData: FormData
+): Promise<ActionResponse> {
+  try {
+    const rawData = {
+      name: formData.get("name") as string,
+      buyIns: formData.get("buyIns") as string,
+      gains: formData.get("gains") as string,
+    };
+
+    const validatedData = playerSchema.safeParse(rawData);
+    if (!validatedData.success) {
+      return {
+        success: false,
+        message: "Please fix the errors in the form",
+        errors: validatedData.error.flatten().fieldErrors,
+      };
+    }
+
+    const player = await prisma.player.findFirst({
+      where: { name: validatedData.data.name },
+    });
+
+    if (player) {
+      return {
+        success: false,
+        message: "Player already exists",
+      };
+    }
+
+    const newPlayer = addPlayer(validatedData.data.name);
+
+    if (!newPlayer) {
+      return {
+        success: false,
+        message: "Failed to save user",
+      };
+    }
+
+    return {
+      data: validatedData.data,
+      success: true,
+      message: "User saved successfully!",
+    };
+  } catch (error) {
+    return {
+      success: false,
+      message: "An unexpected error occurred",
+    };
   }
 }
