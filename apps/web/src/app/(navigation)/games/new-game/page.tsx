@@ -54,6 +54,7 @@ export default function NewGamePage() {
           JSON.stringify([
             ...prevState,
             {
+              id: newPlayer.id,
               name,
               buyIns: parseFloat(buyIns) || 0,
               gains: parseFloat(gains) || 0,
