@@ -57,7 +57,7 @@ export default function SubmitPlayerForm({
           </Label>
           <Input
             id="name"
-            className="col-span-3"
+            className="col-span-3 md:w-1/2"
             name="name"
             type="text"
             minLength={1}
@@ -80,7 +80,7 @@ export default function SubmitPlayerForm({
             type="number"
             name="buyIns"
             required
-            className="col-span-3"
+            className="col-span-3 md:w-1/2"
             placeholder="Enter Buy Ins"
             defaultValue={state.inputs?.buyIns}
           />
@@ -98,7 +98,7 @@ export default function SubmitPlayerForm({
             id="gains"
             type="text"
             name="gains"
-            className="col-span-3"
+            className="col-span-3 md:w-1/2"
             pattern="-?[0-9]*\.?[0-9]*"
             placeholder="Enter Gains"
             defaultValue={state.inputs?.gains}
