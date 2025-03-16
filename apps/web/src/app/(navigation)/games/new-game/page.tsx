@@ -1,19 +1,11 @@
 "use client";
 import GameTable from "../components/GameTable";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useActionState, useEffect, useState } from "react";
 import { Label } from "@/components/ui/label";
 import { createGame } from "@/app/actions/GameActions";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
-  addPlayer,
+  getPlayers,
   handleGetPlayers,
   submitPlayer,
 } from "@/app/actions/PlayerActions";
@@ -46,7 +38,13 @@ export type ActionResponse = {
   };
 };
 
+const initialState: ActionResponse = {
+  success: false,
+  message: "",
+};
+
 export default function NewGamePage() {
+  const [state, action, isPending] = useActionState(submitPlayer, initialState);
   const [players, setPlayers] = useState<Player[]>([]);
   const [allPlayers, setAllPlayers] = useState<Player[]>([]);
   const [isNewPlayer, setIsNewPlayer] = useState(true);
@@ -85,7 +83,7 @@ export default function NewGamePage() {
 
   useEffect(() => {
     async function fetchAllPlayers() {
-      const data = await handleGetPlayers();
+      const data = await getPlayers();
       const players = data.map((player) => ({
         id: player.id,
         name: player.name,
@@ -119,7 +117,15 @@ export default function NewGamePage() {
             </Label>
           </div>
         </div>
-        <SubmitPlayerForm setPlayers={setPlayers} />
+        <SubmitPlayerForm
+          setPlayers={setPlayers}
+          isNewPlayer={isNewPlayer}
+          allPlayers={allPlayers}
+          action={action}
+          isPending={isPending}
+          state={state}
+          setAllPlayers={setAllPlayers}
+        />
       </div>
 
       <div>
@@ -143,41 +149,5 @@ export default function NewGamePage() {
         </Button>
       </div>
     </div>
-  );
-}
-
-type SelectPlayersProps = {
-  data: Player[];
-  setExistingPlayerId: (player: string) => void;
-  existingPlayerId: string;
-};
-
-function SelectPlayers({
-  data,
-  setExistingPlayerId,
-  existingPlayerId,
-}: SelectPlayersProps) {
-  return (
-    <>
-      <Select
-        onValueChange={(value) => {
-          setExistingPlayerId(value);
-        }}
-        value={existingPlayerId}
-      >
-        <SelectTrigger className="w-[180px]">
-          <SelectValue placeholder="Select Existing Player" />
-        </SelectTrigger>
-        <SelectContent>
-          {data.map((player) => {
-            return (
-              <SelectItem key={player.id} value={player.id}>
-                {player.name}
-              </SelectItem>
-            );
-          })}
-        </SelectContent>
-      </Select>
-    </>
   );
 }

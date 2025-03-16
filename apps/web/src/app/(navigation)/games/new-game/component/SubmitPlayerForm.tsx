@@ -1,10 +1,18 @@
-import { submitPlayer } from "@/app/actions/PlayerActions";
+"use client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useActionState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { ActionResponse } from "../page";
 import { Player } from "@prisma/client";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { getPlayers, handleGetPlayers } from "@/app/actions/PlayerActions";
 
 const initialState: ActionResponse = {
   success: false,
@@ -13,12 +21,24 @@ const initialState: ActionResponse = {
 
 type SubmitPlayerFormProps = {
   setPlayers: (players: Player[]) => void;
+  isNewPlayer: boolean;
+  allPlayers: Player[];
+  action: (payload: FormData) => void;
+  isPending: boolean;
+  state: ActionResponse;
+  setAllPlayers: (players: Player[]) => void;
 };
 
 export default function SubmitPlayerForm({
   setPlayers,
+  isNewPlayer,
+  allPlayers,
+  action,
+  isPending,
+  state,
+  setAllPlayers,
 }: SubmitPlayerFormProps) {
-  const [state, action, isPending] = useActionState(submitPlayer, initialState);
+  const [existingPlayerId, setExistingPlayerId] = useState("");
 
   useEffect(() => {
     if (state.success) {
@@ -45,6 +65,7 @@ export default function SubmitPlayerForm({
           },
         ];
       });
+      setExistingPlayerId("");
     }
   }, [state]);
 
@@ -55,16 +76,24 @@ export default function SubmitPlayerForm({
           <Label htmlFor="name" className="text-right">
             Name
           </Label>
-          <Input
-            id="name"
-            className="col-span-3 md:w-1/2"
-            name="name"
-            type="text"
-            minLength={1}
-            required
-            placeholder="Enter Name"
-            defaultValue={state.inputs?.name}
-          />
+          {isNewPlayer ? (
+            <Input
+              id="name"
+              className="col-span-3 md:w-1/2"
+              name="name"
+              type="text"
+              minLength={1}
+              required
+              placeholder="Enter Name"
+              defaultValue={state.inputs?.name}
+            />
+          ) : (
+            <SelectPlayers
+              data={allPlayers}
+              existingPlayerId={existingPlayerId}
+              setExistingPlayerId={setExistingPlayerId}
+            />
+          )}
           {state?.errors?.name && (
             <p id="streetAddress-error" className="text-sm text-red-500">
               {state.errors.name[0]}
@@ -126,5 +155,42 @@ export default function SubmitPlayerForm({
         )}
       </div>
     </form>
+  );
+}
+
+type SelectPlayersProps = {
+  data: Player[];
+  setExistingPlayerId: (player: string) => void;
+  existingPlayerId: string;
+};
+
+function SelectPlayers({
+  data,
+  setExistingPlayerId,
+  existingPlayerId,
+}: SelectPlayersProps) {
+  return (
+    <>
+      <Select
+        name="existingPlayerId"
+        value={existingPlayerId}
+        onValueChange={(value) => {
+          setExistingPlayerId(value);
+        }}
+      >
+        <SelectTrigger className="w-[180px]">
+          <SelectValue placeholder="Select Existing Player" />
+        </SelectTrigger>
+        <SelectContent>
+          {data.map((player) => {
+            return (
+              <SelectItem key={player.id} value={player.id}>
+                {player.name}
+              </SelectItem>
+            );
+          })}
+        </SelectContent>
+      </Select>
+    </>
   );
 }

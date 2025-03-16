@@ -7,17 +7,13 @@ import { unstable_cache } from "next/cache";
 import { ActionResponse } from "../(navigation)/games/new-game/page";
 import { z } from "zod";
 
-async function getPlayers() {
+export async function getPlayers() {
   return await prisma.player.findMany();
 }
 
-export const handleGetPlayers = unstable_cache(
-  async () => {
-    return getPlayers();
-  },
-  ["players"],
-  { revalidate: false }
-);
+export const handleGetPlayers = unstable_cache(async () => {
+  return getPlayers();
+}, ["players"]);
 
 export async function addPlayer(name: string) {
   const newPlayer = await prisma.player.create({
@@ -48,11 +44,17 @@ export async function getPlayerGamesByGameId(gameId: string) {
   }
 }
 
-const playerSchema = z.object({
-  name: z.string().min(1, "Name must be at least 1 character"),
-  buyIns: z.string().optional(),
-  gains: z.string().optional(),
-});
+const playerSchema = z
+  .object({
+    name: z.string().min(1, "Name is required").nullable().optional(),
+    existingPlayerId: z.string().uuid().nullable().optional(),
+    buyIns: z.string().regex(/^\d+(\.\d{1,2})?$/, "Invalid buy-in amount"),
+    gains: z.string().regex(/^-?\d+(\.\d{1,2})?$/, "Invalid gains amount"),
+  })
+  .refine((data) => data.name || data.existingPlayerId, {
+    message: "Either name or existingPlayerId is required",
+    path: ["name"],
+  });
 
 export async function submitPlayer(
   prevState: ActionResponse | null,
@@ -61,16 +63,49 @@ export async function submitPlayer(
   try {
     const rawData = {
       name: formData.get("name") as string,
+      existingPlayerId: formData.get("existingPlayerId") as string,
       buyIns: formData.get("buyIns") as string,
       gains: formData.get("gains") as string,
     };
 
     const validatedData = playerSchema.safeParse(rawData);
+
     if (!validatedData.success) {
       return {
         success: false,
         message: "Please fix the errors in the form",
         errors: validatedData.error.flatten().fieldErrors,
+        inputs: validatedData.data,
+      };
+    }
+
+    if (validatedData.data.existingPlayerId) {
+      const player = await prisma.player.findFirst({
+        where: { id: validatedData.data.existingPlayerId },
+      });
+
+      if (!player) {
+        return {
+          success: false,
+          message: "Player not found",
+          inputs: validatedData.data,
+        };
+      }
+      return {
+        data: {
+          ...player,
+          buyIns: validatedData.data.buyIns,
+          gains: validatedData.data.gains,
+        },
+        success: true,
+        message: "User saved successfully!",
+      };
+    }
+
+    if (!validatedData.data.name) {
+      return {
+        success: false,
+        message: "Name is required",
         inputs: validatedData.data,
       };
     }
@@ -96,6 +131,8 @@ export async function submitPlayer(
         inputs: validatedData.data,
       };
     }
+
+    revalidateTag("players");
 
     return {
       data: { ...validatedData.data, id: newPlayer.id },
