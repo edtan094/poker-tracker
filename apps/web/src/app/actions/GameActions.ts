@@ -26,10 +26,16 @@ export async function createGame(
         _sum: { gains: true },
       });
 
+      const totalBuyIns = await prisma.playerGame.aggregate({
+        where: { playerId: id },
+        _sum: { buyIns: true },
+      });
+
       const updatedPlayer = await prisma.player.update({
         where: { id },
         data: {
           gains: new Decimal(totalGains._sum.gains || 0),
+          buyIns: new Decimal(totalBuyIns._sum.buyIns || 0),
         },
       });
     }
