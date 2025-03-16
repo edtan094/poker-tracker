@@ -39,7 +39,7 @@ export default async function LeaderboardsPage() {
                   <TableCell>{index + 1}</TableCell>
                   <TableCell>
                     {index === 0 ? (
-                      <span>👑 {player.name} ( Aura Farmer )</span>
+                      <span>{player.name} ( Aura Farmer 👑 )</span>
                     ) : (
                       player.name
                     )}
