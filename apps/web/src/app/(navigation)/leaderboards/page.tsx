@@ -37,7 +37,13 @@ export default async function LeaderboardsPage() {
               return (
                 <TableRow key={player.id}>
                   <TableCell>{index + 1}</TableCell>
-                  <TableCell>{player.name}</TableCell>
+                  <TableCell>
+                    {index === 0 ? (
+                      <span>👑 {player.name} ( Aura Farmer )</span>
+                    ) : (
+                      player.name
+                    )}
+                  </TableCell>
                   <TableCell>{+player.gains}</TableCell>
                 </TableRow>
               );
