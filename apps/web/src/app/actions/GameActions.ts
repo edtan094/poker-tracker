@@ -2,7 +2,7 @@
 
 import { prisma } from "@/lib/prisma";
 import { Decimal } from "@prisma/client/runtime/library";
-import { revalidatePath, revalidateTag } from "next/cache";
+import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
 export async function createGame(
@@ -42,7 +42,6 @@ export async function createGame(
 
     return game;
   });
-  revalidateTag("players");
   revalidatePath("/leaderboards");
   redirect(`/games/new-game/${game.id}`);
 }
@@ -85,7 +84,6 @@ export async function updatePlayerScore(
   });
 
   revalidatePath(`/games/${gameId}`);
-  revalidateTag("players");
 }
 
 export async function getPlayersByGame(gameId: string) {

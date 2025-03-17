@@ -1,4 +1,3 @@
-import { handleGetPlayers } from "@/app/actions/PlayerActions";
 import {
   Table,
   TableBody,
