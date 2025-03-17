@@ -4,11 +4,7 @@ import { Button } from "@/components/ui/button";
 import { useActionState, useEffect, useState } from "react";
 import { Label } from "@/components/ui/label";
 import { createGame } from "@/app/actions/GameActions";
-import {
-  getPlayers,
-  handleGetPlayers,
-  submitPlayer,
-} from "@/app/actions/PlayerActions";
+import { getPlayers, submitPlayer } from "@/app/actions/PlayerActions";
 import { Switch } from "@/components/ui/switch";
 import { Player } from "@prisma/client";
 import SubmitPlayerForm from "./component/SubmitPlayerForm";

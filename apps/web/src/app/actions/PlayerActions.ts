@@ -1,9 +1,6 @@
 "use server";
 
 import { prisma } from "@/lib/prisma";
-import { Decimal } from "@prisma/client/runtime/library";
-import { revalidatePath, revalidateTag } from "next/cache";
-import { unstable_cache } from "next/cache";
 import { ActionResponse } from "../(navigation)/games/new-game/page";
 import { z } from "zod";
 
@@ -11,15 +8,10 @@ export async function getPlayers() {
   return await prisma.player.findMany();
 }
 
-export const handleGetPlayers = unstable_cache(async () => {
-  return getPlayers();
-}, ["players"]);
-
 export async function addPlayer(name: string) {
   const newPlayer = await prisma.player.create({
     data: { name, buyIns: 0, gains: 0 },
   });
-  revalidateTag("players");
 
   return newPlayer;
 }
@@ -131,8 +123,6 @@ export async function submitPlayer(
         inputs: validatedData.data,
       };
     }
-
-    revalidateTag("players");
 
     return {
       data: { ...validatedData.data, id: newPlayer.id },

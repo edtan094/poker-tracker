@@ -12,7 +12,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { getPlayers, handleGetPlayers } from "@/app/actions/PlayerActions";
 
 const initialState: ActionResponse = {
   success: false,
