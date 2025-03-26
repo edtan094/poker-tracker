@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
-import { cn } from "@/lib/utils";
+import AdminPanelLayout from "@/components/admin-panel/admin-panel-layout";
+import { ContentLayout } from "@/components/admin-panel/content-layout";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -36,7 +37,9 @@ export default function RootLayout({ children }: RootLayoutProps) {
             enableSystem
             disableTransitionOnChange
           >
-            <div>{children}</div>
+            <AdminPanelLayout>
+              <ContentLayout title="Poker Tracker">{children}</ContentLayout>
+            </AdminPanelLayout>
           </ThemeProvider>
         </body>
       </html>
