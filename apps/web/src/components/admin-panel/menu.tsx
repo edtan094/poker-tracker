@@ -18,10 +18,9 @@ import {
 
 interface MenuProps {
   isOpen: boolean | undefined;
-  toggleOpen?: () => void;
 }
 
-export function Menu({ isOpen, toggleOpen }: MenuProps) {
+export function Menu({ isOpen }: MenuProps) {
   const pathname = usePathname();
   const menuList = getMenuList(pathname);
 
@@ -67,12 +66,6 @@ export function Menu({ isOpen, toggleOpen }: MenuProps) {
                               }
                               className="w-full justify-start h-10 mb-1"
                               asChild
-                              onClick={() => {
-                                if (toggleOpen) {
-                                  console.log("toggleOpen");
-                                  toggleOpen?.();
-                                }
-                              }}
                             >
                               <Link href={href}>
                                 <span

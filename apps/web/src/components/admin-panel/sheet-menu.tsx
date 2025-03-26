@@ -11,12 +11,7 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet";
 
-type SheetMenuProps = {
-  toggleOpen: () => void;
-  getOpenState: () => boolean;
-};
-
-export function SheetMenu({ getOpenState, toggleOpen }: SheetMenuProps) {
+export function SheetMenu() {
   return (
     <Sheet>
       <SheetTrigger className="lg:hidden" asChild>
