@@ -12,6 +12,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Switch } from "@/components/ui/switch";
 
 const initialState: ActionResponse = {
   success: false,
@@ -26,6 +27,7 @@ type SubmitPlayerFormProps = {
   isPending: boolean;
   state: ActionResponse;
   setAllPlayers: (players: Player[]) => void;
+  toggleExistingOrNewPlayer: () => void;
 };
 
 export default function SubmitPlayerForm({
@@ -36,6 +38,7 @@ export default function SubmitPlayerForm({
   isPending,
   state,
   setAllPlayers,
+  toggleExistingOrNewPlayer,
 }: SubmitPlayerFormProps) {
   const [existingPlayerId, setExistingPlayerId] = useState("");
 
@@ -71,6 +74,15 @@ export default function SubmitPlayerForm({
   return (
     <form action={action}>
       <div className="grid gap-4 py-4">
+        <div className="grid grid-cols-4 items-center gap-4">
+          <Label htmlFor="newOrExistingPlayer" className="text-right">
+            {isNewPlayer ? "New Player" : "Existing Player"}
+          </Label>
+          <Switch
+            onCheckedChange={toggleExistingOrNewPlayer}
+            checked={!isNewPlayer}
+          />
+        </div>
         <div className="grid grid-cols-4 items-center gap-4">
           <Label htmlFor="name" className="text-right">
             Name

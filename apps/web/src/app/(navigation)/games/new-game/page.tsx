@@ -8,6 +8,8 @@ import { getPlayers, submitPlayer } from "@/app/actions/PlayerActions";
 import { Switch } from "@/components/ui/switch";
 import { Player } from "@prisma/client";
 import SubmitPlayerForm from "./component/SubmitPlayerForm";
+import { Input } from "@/components/ui/input";
+import GameSettings from "./component/GameSettings";
 
 export type UserFormData = {
   name: string;
@@ -46,9 +48,14 @@ export default function NewGamePage() {
   const [isNewPlayer, setIsNewPlayer] = useState(true);
   const [loading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
+  const [showDollarAmount, setShowDollarAmount] = useState(false);
 
   const toggleExistingOrNewPlayer = () => {
     setIsNewPlayer(!isNewPlayer);
+  };
+
+  const toggleShowDollarAmount = () => {
+    setShowDollarAmount(!showDollarAmount);
   };
 
   const handleDelete = (index: number) => {
@@ -102,16 +109,11 @@ export default function NewGamePage() {
   return (
     <div>
       <div className="mb-4 border-b pb-4">
-        <div className="flex justify-center items-center">
-          <div className="flex items-center space-x-2">
-            <Switch
-              onCheckedChange={toggleExistingOrNewPlayer}
-              checked={!isNewPlayer}
-            />
-            <Label htmlFor="newOrExistingPlayer">
-              {isNewPlayer ? "New Player" : "Existing Player"}
-            </Label>
-          </div>
+        <div className=" my-8">
+          <GameSettings
+            toggleShowDollarAmount={toggleShowDollarAmount}
+            showDollarAmount={showDollarAmount}
+          />
         </div>
         <SubmitPlayerForm
           setPlayers={setPlayers}
@@ -121,6 +123,7 @@ export default function NewGamePage() {
           isPending={isPending}
           state={state}
           setAllPlayers={setAllPlayers}
+          toggleExistingOrNewPlayer={toggleExistingOrNewPlayer}
         />
       </div>
 
@@ -134,7 +137,8 @@ export default function NewGamePage() {
       <div className=" border-t mt-4 pt-4">
         <p>Total Buy Ins: ${totalBuyIns}</p>
       </div>
-      <div className="mt-4">
+
+      <div className=" mt-4">
         <Button
           variant="default"
           type="button"
