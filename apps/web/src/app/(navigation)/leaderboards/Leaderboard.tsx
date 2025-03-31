@@ -7,11 +7,10 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { cache } from "@/lib/cache";
-import { delay } from "@/lib/delay";
 import { prisma } from "@/lib/prisma";
 
 const getAllPlayersByGains = cache(async () => {
-  return await prisma.player.findMany({ orderBy: { gains: "desc" } });
+  return prisma.player.findMany({ orderBy: { gains: "desc" } });
 }, ["/leaderboards"]);
 
 export default async function Leaderboard() {
@@ -36,12 +35,12 @@ export default async function Leaderboard() {
                   <TableCell>{index + 1}</TableCell>
                   <TableCell>
                     {index === 0 ? (
-                      <span>{player.name} ( Aura Farmer 👑 )</span>
+                      <span>{player.name} ( Aura Farmer 👑)</span>
                     ) : (
                       player.name
                     )}
                   </TableCell>
-                  <TableCell>{+player.gains}</TableCell>
+                  <TableCell>{Number(player.gains)}</TableCell>
                 </TableRow>
               );
             })}
