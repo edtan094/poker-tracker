@@ -107,7 +107,6 @@ export default function NewGamePage() {
   }, []);
 
   const totalBuyInsInChips = (totalBuyIns / dollarPerBuyIn) * chipsPerBuyIn;
-  console.log("players", players);
 
   return (
     <div>
