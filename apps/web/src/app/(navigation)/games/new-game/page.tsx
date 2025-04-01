@@ -49,6 +49,8 @@ export default function NewGamePage() {
   const [loading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const [showDollarAmount, setShowDollarAmount] = useState(false);
+  const [chipsPerBuyIn, setChipsPerBuyIn] = useState(0);
+  const [moneyPerBuyIn, setMoneyPerBuyIn] = useState(0);
 
   const toggleExistingOrNewPlayer = () => {
     setIsNewPlayer(!isNewPlayer);
@@ -108,11 +110,18 @@ export default function NewGamePage() {
 
   return (
     <div>
+      <div className=" flex justify-center">
+        <h2 className=" font-bold text-3xl">New Game</h2>
+      </div>
       <div className="mb-4 border-b pb-4">
         <div className=" my-8">
           <GameSettings
             toggleShowDollarAmount={toggleShowDollarAmount}
             showDollarAmount={showDollarAmount}
+            moneyPerBuyIn={moneyPerBuyIn}
+            chipsPerBuyIn={chipsPerBuyIn}
+            setMoneyPerBuyIn={setMoneyPerBuyIn}
+            setChipsPerBuyIn={setChipsPerBuyIn}
           />
         </div>
         <SubmitPlayerForm
