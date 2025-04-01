@@ -69,7 +69,7 @@ export default function SubmitPlayerForm({
 
   return (
     <div className=" flex justify-center">
-      <form action={action} className="mb-6 space-y-4">
+      <form action={action} className="mb-6 space-y-4 w-full md:w-[360px]">
         <div className="flex items-center space-x-2">
           <Label htmlFor="newOrExistingPlayer" className="text-right">
             {isNewPlayer ? "New Player" : "Existing Player"}

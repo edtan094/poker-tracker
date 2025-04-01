@@ -12,6 +12,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Player } from "@prisma/client";
 import { debounce } from "lodash";
+import { Trash2 } from "lucide-react";
 
 type GameTableProps = {
   players: Player[];
@@ -135,15 +136,10 @@ export default function GameTable({
 
           return (
             <TableRow key={player.id}>
-              <TableCell>
-                <Input
-                  type="text"
-                  value={player.name}
-                  readOnly
-                  className="border p-1 w-full bg-muted text-muted-foreground"
-                />
+              <TableCell className=" p-2">
+                <p>{player.name}</p>
               </TableCell>
-              <TableCell>
+              <TableCell className=" p-2">
                 <Input
                   type="number"
                   value={displayBuyIns}
@@ -153,7 +149,7 @@ export default function GameTable({
                   className="border p-1 w-full"
                 />
               </TableCell>
-              <TableCell>
+              <TableCell className=" p-2">
                 <Input
                   type="text"
                   value={gainsInputs[index] === "0" ? "" : gainsInputs[index]}
@@ -162,7 +158,16 @@ export default function GameTable({
               </TableCell>
               <TableCell>
                 <Button
+                  variant="ghost"
+                  size="icon"
+                  className="text-red-500 hover:bg-red-100 md:hidden"
+                  onClick={() => handleDelete(index)}
+                >
+                  <Trash2 className="w-4 h-4" />
+                </Button>
+                <Button
                   variant="destructive"
+                  className="hidden md:inline-flex"
                   onClick={() => handleDelete(index)}
                 >
                   Delete
