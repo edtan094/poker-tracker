@@ -103,7 +103,7 @@ export default function GameTable({
         return newPlayers;
       });
     }
-    if (isNaN(parsed)) {
+    if (isNaN(parsed) && value !== "-" && value !== "-." && value !== ".") {
       setPlayers((prevPlayers) => {
         const newPlayers = [...prevPlayers];
         newPlayers[index] = {
