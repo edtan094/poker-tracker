@@ -116,16 +116,18 @@ export default function NewGamePage() {
             setDollarPerBuyIn={setDollarPerBuyIn}
           />
         </div>
-        <SubmitPlayerForm
-          setPlayers={setPlayers}
-          isNewPlayer={isNewPlayer}
-          allPlayers={allPlayers}
-          action={action}
-          isPending={isPending}
-          state={state}
-          setAllPlayers={setAllPlayers}
-          toggleExistingOrNewPlayer={toggleExistingOrNewPlayer}
-        />
+        <div className=" my-8">
+          <SubmitPlayerForm
+            setPlayers={setPlayers}
+            isNewPlayer={isNewPlayer}
+            allPlayers={allPlayers}
+            action={action}
+            isPending={isPending}
+            state={state}
+            setAllPlayers={setAllPlayers}
+            toggleExistingOrNewPlayer={toggleExistingOrNewPlayer}
+          />
+        </div>
       </div>
 
       <div>
