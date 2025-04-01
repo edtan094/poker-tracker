@@ -117,15 +117,15 @@ export default function GameTable({
   };
 
   useEffect(() => {
-    setGainsInputs((prev) => {
-      return players.map((p, i) => {
-        if (prev[i] !== undefined) return prev[i];
+    setGainsInputs(() => {
+      return players.map((p) => {
+        if (!p.gains) return "";
         return chipMode
           ? ((p.gains / dollarPerBuyIn) * chipsPerBuyIn).toString()
           : p.gains.toString();
       });
     });
-  }, [players.length, chipMode]);
+  }, [players, chipMode, chipsPerBuyIn, dollarPerBuyIn]);
 
   return (
     <Table>

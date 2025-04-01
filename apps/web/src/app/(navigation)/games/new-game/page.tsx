@@ -121,16 +121,6 @@ export default function NewGamePage() {
       </div>
       <div className="mb-4 border-b pb-4">
         <div className=" my-8">
-          <GameSettings
-            chipMode={chipMode}
-            setChipMode={setChipMode}
-            chipsPerBuyIn={chipsPerBuyIn}
-            setChipsPerBuyIn={setChipsPerBuyIn}
-            dollarPerBuyIn={dollarPerBuyIn}
-            setDollarPerBuyIn={setDollarPerBuyIn}
-          />
-        </div>
-        <div className=" my-8">
           <SubmitPlayerForm
             setPlayers={setPlayers}
             isNewPlayer={isNewPlayer}
@@ -140,6 +130,16 @@ export default function NewGamePage() {
             state={state}
             setAllPlayers={setAllPlayers}
             toggleExistingOrNewPlayer={toggleExistingOrNewPlayer}
+          />
+        </div>
+        <div className=" my-8">
+          <GameSettings
+            chipMode={chipMode}
+            setChipMode={setChipMode}
+            chipsPerBuyIn={chipsPerBuyIn}
+            setChipsPerBuyIn={setChipsPerBuyIn}
+            dollarPerBuyIn={dollarPerBuyIn}
+            setDollarPerBuyIn={setDollarPerBuyIn}
           />
         </div>
       </div>
