@@ -139,10 +139,12 @@ export default function GameTable({
       </TableHeader>
       <TableBody>
         {players.map((player, index) => {
-          const displayBuyIns = chipMode
-            ? convertToChips(player.buyIns).toString()
-            : player.buyIns.toString();
-
+          const displayBuyIns = () => {
+            if (!player.buyIns) return 0;
+            return chipMode
+              ? convertToChips(player.buyIns).toString()
+              : player.buyIns.toString();
+          };
           return (
             <TableRow key={player.id}>
               <TableCell className=" p-2">
@@ -151,7 +153,7 @@ export default function GameTable({
               <TableCell className=" p-2">
                 <Input
                   type="number"
-                  value={displayBuyIns}
+                  value={displayBuyIns()}
                   onChange={(e) =>
                     handleChange(index, "buyIns", e.target.value)
                   }
