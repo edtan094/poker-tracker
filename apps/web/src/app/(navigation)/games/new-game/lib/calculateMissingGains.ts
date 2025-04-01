@@ -1,6 +1,6 @@
 import { Player } from "@prisma/client";
 
-export const calculateMissingGains = (
+export const showMissingGainsMessage = (
   players: Player[],
   chipMode: boolean,
   dollarPerBuyIn: number,
