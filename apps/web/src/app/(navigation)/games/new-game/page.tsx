@@ -76,7 +76,12 @@ export default function NewGamePage() {
     }
   };
 
-  const totalBuyIns = players.reduce((acc, player) => acc + player.buyIns, 0);
+  const totalBuyIns = players.reduce((acc, player) => {
+    if (player.buyIns === undefined) {
+      return acc;
+    }
+    return acc + player.buyIns;
+  }, 0);
 
   useEffect(() => {
     async function fetchAllPlayers() {
@@ -140,8 +145,12 @@ export default function NewGamePage() {
           dollarPerBuyIn={dollarPerBuyIn}
         />
       </div>
-      <div className=" border-t mt-4 pt-4">
-        <p>Total Buy Ins: ${totalBuyIns}</p>
+      <div className=" border-t mt-4 pt-4 text-green-500">
+        <p className=" mb-2 ">Total Buy Ins in $$$: ${totalBuyIns}</p>
+        <p>
+          Total Buy Ins in Chips:{" "}
+          {(totalBuyIns / dollarPerBuyIn) * chipsPerBuyIn} Chips
+        </p>
       </div>
 
       <div className=" mt-4">
