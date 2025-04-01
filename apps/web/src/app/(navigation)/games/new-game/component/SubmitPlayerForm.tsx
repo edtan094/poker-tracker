@@ -12,6 +12,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Switch } from "@/components/ui/switch";
 
 const initialState: ActionResponse = {
   success: false,
@@ -26,6 +27,7 @@ type SubmitPlayerFormProps = {
   isPending: boolean;
   state: ActionResponse;
   setAllPlayers: (players: Player[]) => void;
+  toggleExistingOrNewPlayer: () => void;
 };
 
 export default function SubmitPlayerForm({
@@ -36,6 +38,7 @@ export default function SubmitPlayerForm({
   isPending,
   state,
   setAllPlayers,
+  toggleExistingOrNewPlayer,
 }: SubmitPlayerFormProps) {
   const [existingPlayerId, setExistingPlayerId] = useState("");
 
@@ -49,8 +52,6 @@ export default function SubmitPlayerForm({
             {
               id: state.data?.id,
               name: state.data?.name,
-              buyIns: parseFloat(state.data?.buyIns) || 0,
-              gains: parseFloat(state.data?.gains) || 0,
             },
           ])
         );
@@ -59,8 +60,6 @@ export default function SubmitPlayerForm({
           {
             id: state.data?.id,
             name: state.data?.name,
-            buyIns: parseFloat(state.data?.buyIns) || 0,
-            gains: parseFloat(state.data?.gains) || 0,
           },
         ];
       });
@@ -69,9 +68,18 @@ export default function SubmitPlayerForm({
   }, [state]);
 
   return (
-    <form action={action}>
-      <div className="grid gap-4 py-4">
-        <div className="grid grid-cols-4 items-center gap-4">
+    <div className=" flex justify-center">
+      <form action={action} className="mb-6 space-y-4 w-full md:w-[360px]">
+        <div className="flex items-center space-x-2">
+          <Label htmlFor="newOrExistingPlayer" className="text-right">
+            {isNewPlayer ? "New Player" : "Existing Player"}
+          </Label>
+          <Switch
+            onCheckedChange={toggleExistingOrNewPlayer}
+            checked={!isNewPlayer}
+          />
+        </div>
+        <div className="flex items-center space-x-2">
           <Label htmlFor="name" className="text-right">
             Name
           </Label>
@@ -99,61 +107,23 @@ export default function SubmitPlayerForm({
             </p>
           )}
         </div>
-        <div className="grid grid-cols-4 items-center gap-4">
-          <Label htmlFor="buyIns" className="text-right">
-            Buy Ins
-          </Label>
-          <Input
-            id="buyIns"
-            type="number"
-            name="buyIns"
-            required
-            className="col-span-3 md:w-1/2"
-            placeholder="Enter Buy Ins"
-            defaultValue={state.inputs?.buyIns}
-          />
-          {state?.errors?.buyIns && (
-            <p id="streetAddress-error" className="text-sm text-red-500">
-              {state.errors.buyIns[0]}
-            </p>
-          )}
-        </div>
-        <div className="grid grid-cols-4 items-center gap-4">
-          <Label htmlFor="gains" className="text-right">
-            <span>Gains</span>
-          </Label>
-          <Input
-            id="gains"
-            type="text"
-            name="gains"
-            className="col-span-3 md:w-1/2"
-            pattern="-?[0-9]*\.?[0-9]*"
-            placeholder="Enter Gains"
-            defaultValue={state.inputs?.gains}
-          />
-          {state?.errors?.gains && (
-            <p id="streetAddress-error" className="text-sm text-red-500">
-              {state.errors.gains[0]}
-            </p>
-          )}
-        </div>
-      </div>
-      <div className="flex justify-between">
-        <Button variant="default" type="submit" disabled={isPending}>
-          {isPending ? "Submitting..." : "Submit"}
-        </Button>
+        <div className="flex justify-between">
+          <Button variant="default" type="submit" disabled={isPending}>
+            {isPending ? "Submitting..." : "Submit"}
+          </Button>
 
-        {state.message && (
-          <>
-            {state.success ? (
-              <p className="text-center text-primary">{state.message}</p>
-            ) : (
-              <p className="text-center text-red-500">{state.message}</p>
-            )}
-          </>
-        )}
-      </div>
-    </form>
+          {state.message && (
+            <>
+              {state.success ? (
+                <p className="text-center text-primary">{state.message}</p>
+              ) : (
+                <p className="text-center text-red-500">{state.message}</p>
+              )}
+            </>
+          )}
+        </div>
+      </form>
+    </div>
   );
 }
 

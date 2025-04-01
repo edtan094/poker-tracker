@@ -1,13 +1,13 @@
 "use client";
 import GameTable from "../components/GameTable";
 import { Button } from "@/components/ui/button";
-import { useActionState, useEffect, useState } from "react";
-import { Label } from "@/components/ui/label";
+import { useActionState, useEffect, useMemo, useState } from "react";
 import { createGame } from "@/app/actions/GameActions";
 import { getPlayers, submitPlayer } from "@/app/actions/PlayerActions";
-import { Switch } from "@/components/ui/switch";
 import { Player } from "@prisma/client";
 import SubmitPlayerForm from "./component/SubmitPlayerForm";
+import GameSettings from "./component/GameSettings";
+import { showMissingGainsMessage } from "./lib/calculateMissingGains";
 
 export type UserFormData = {
   name: string;
@@ -24,13 +24,9 @@ export type ActionResponse = {
   data?: {
     id: string;
     name: string;
-    buyIns?: string | undefined;
-    gains?: string | undefined;
   };
   inputs?: {
     name: string;
-    buyIns?: string | undefined;
-    gains?: string | undefined;
   };
 };
 
@@ -46,6 +42,9 @@ export default function NewGamePage() {
   const [isNewPlayer, setIsNewPlayer] = useState(true);
   const [loading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
+  const [chipMode, setChipMode] = useState(true);
+  const [chipsPerBuyIn, setChipsPerBuyIn] = useState(500);
+  const [dollarPerBuyIn, setDollarPerBuyIn] = useState(5);
 
   const toggleExistingOrNewPlayer = () => {
     setIsNewPlayer(!isNewPlayer);
@@ -75,7 +74,12 @@ export default function NewGamePage() {
     }
   };
 
-  const totalBuyIns = players.reduce((acc, player) => acc + player.buyIns, 0);
+  const totalBuyIns = players.reduce((acc, player) => {
+    if (player.buyIns === undefined) {
+      return acc;
+    }
+    return acc + player.buyIns;
+  }, 0);
 
   useEffect(() => {
     async function fetchAllPlayers() {
@@ -99,29 +103,45 @@ export default function NewGamePage() {
     }
   }, []);
 
+  const missingGainsMessage = useMemo(() => {
+    return showMissingGainsMessage(
+      players,
+      chipMode,
+      dollarPerBuyIn,
+      chipsPerBuyIn
+    );
+  }, [players, chipMode, dollarPerBuyIn, chipsPerBuyIn]);
+
+  const totalBuyInsInChips = (totalBuyIns / dollarPerBuyIn) * chipsPerBuyIn;
+
   return (
     <div>
+      <div className=" flex justify-center">
+        <h2 className=" font-bold text-3xl">New Game</h2>
+      </div>
       <div className="mb-4 border-b pb-4">
-        <div className="flex justify-center items-center">
-          <div className="flex items-center space-x-2">
-            <Switch
-              onCheckedChange={toggleExistingOrNewPlayer}
-              checked={!isNewPlayer}
-            />
-            <Label htmlFor="newOrExistingPlayer">
-              {isNewPlayer ? "New Player" : "Existing Player"}
-            </Label>
-          </div>
+        <div className=" my-8">
+          <SubmitPlayerForm
+            setPlayers={setPlayers}
+            isNewPlayer={isNewPlayer}
+            allPlayers={allPlayers}
+            action={action}
+            isPending={isPending}
+            state={state}
+            setAllPlayers={setAllPlayers}
+            toggleExistingOrNewPlayer={toggleExistingOrNewPlayer}
+          />
         </div>
-        <SubmitPlayerForm
-          setPlayers={setPlayers}
-          isNewPlayer={isNewPlayer}
-          allPlayers={allPlayers}
-          action={action}
-          isPending={isPending}
-          state={state}
-          setAllPlayers={setAllPlayers}
-        />
+        <div className=" my-8">
+          <GameSettings
+            chipMode={chipMode}
+            setChipMode={setChipMode}
+            chipsPerBuyIn={chipsPerBuyIn}
+            setChipsPerBuyIn={setChipsPerBuyIn}
+            dollarPerBuyIn={dollarPerBuyIn}
+            setDollarPerBuyIn={setDollarPerBuyIn}
+          />
+        </div>
       </div>
 
       <div>
@@ -129,12 +149,22 @@ export default function NewGamePage() {
           players={players}
           handleDelete={handleDelete}
           setPlayers={setPlayers}
+          chipMode={chipMode}
+          chipsPerBuyIn={chipsPerBuyIn}
+          dollarPerBuyIn={dollarPerBuyIn}
         />
       </div>
-      <div className=" border-t mt-4 pt-4">
-        <p>Total Buy Ins: ${totalBuyIns}</p>
+      <div className=" border-t mt-4 pt-4 text-green-500">
+        <p className=" mb-2">Total Buy Ins in $$$: ${totalBuyIns}</p>
+        <p className=" mb-2">
+          Total Buy Ins in Chips: {totalBuyInsInChips} Chips
+        </p>
+        {missingGainsMessage && (
+          <p className="text-red-500">{missingGainsMessage}</p>
+        )}
       </div>
-      <div className="mt-4">
+
+      <div className=" mt-4">
         <Button
           variant="default"
           type="button"

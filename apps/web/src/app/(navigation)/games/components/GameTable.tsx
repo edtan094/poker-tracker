@@ -12,33 +12,63 @@ import {
 import { Input } from "@/components/ui/input";
 import { Player } from "@prisma/client";
 import { debounce } from "lodash";
+import { Trash2 } from "lucide-react";
 
 type GameTableProps = {
   players: Player[];
   handleDelete: (index: number) => void;
   setPlayers: React.Dispatch<React.SetStateAction<Player[]>>;
+  chipMode: boolean;
+  chipsPerBuyIn: number;
+  dollarPerBuyIn: number;
 };
 
 export default function GameTable({
   players,
   handleDelete,
   setPlayers,
+  chipMode,
+  chipsPerBuyIn,
+  dollarPerBuyIn,
 }: GameTableProps) {
+  const [gainsInputs, setGainsInputs] = useState<string[]>(
+    players.map((p) => {
+      if (p.gains) {
+        return p.gains?.toString();
+      }
+      return "";
+    })
+  );
+
   const debouncedUpdate = useCallback(
     debounce((newPlayers) => {
       localStorage.setItem("players", JSON.stringify(newPlayers));
       setPlayers(newPlayers);
     }, 500),
-    []
+    [setPlayers]
   );
 
-  const handleChange = (index: number, field: keyof Player, value: string) => {
-    setPlayers((prevPlayers) => {
-      const newPlayers = prevPlayers.map((player, i) =>
+  const convertToDollars = (chips: number) =>
+    (chips / chipsPerBuyIn) * dollarPerBuyIn;
+
+  const convertToChips = (dollars: number) =>
+    (dollars / dollarPerBuyIn) * chipsPerBuyIn;
+
+  const handleChange = (
+    index: number,
+    field: "buyIns" | "gains",
+    rawValue: string
+  ) => {
+    const parsed = parseFloat(rawValue);
+    const numericValue = isNaN(parsed) ? 0 : parsed;
+    const converted = chipMode ? convertToDollars(numericValue) : numericValue;
+
+    setPlayers((prev) => {
+      const newPlayers = prev.map((player, i) =>
         i === index
           ? {
               ...player,
-              [field]: (field === "buyIns" && parseFloat(value)) || 0,
+              [field]: converted,
             }
           : player
       );
@@ -49,21 +79,55 @@ export default function GameTable({
   };
 
   const handleChangeGains = (index: number, value: string) => {
-    if (/^-?\d*\.?\d*$/.test(value) || value === "") {
-      setPlayers((prevPlayers) => {
-        const newPlayers = prevPlayers.map((player, i) =>
-          i === index
-            ? {
-                ...player,
-                gains: value,
-              }
-            : player
-        );
+    if (!/^[-]?\d*\.?\d*$/.test(value)) return;
 
+    setGainsInputs((prev) => {
+      const newInputs = [...prev];
+      newInputs[index] = value;
+      return newInputs;
+    });
+
+    const updatePlayerGains = (gainValue: number) => {
+      setPlayers((prevPlayers) => {
+        const newPlayers = [...prevPlayers];
+        newPlayers[index] = {
+          ...newPlayers[index],
+          gains: gainValue,
+        };
         debouncedUpdate(newPlayers);
         return newPlayers;
       });
+    };
+
+    const parsed = parseFloat(value);
+    if (!isNaN(parsed)) {
+      const dollarValue = chipMode
+        ? (parsed / chipsPerBuyIn) * dollarPerBuyIn
+        : parsed;
+
+      updatePlayerGains(dollarValue);
     }
+    if (isNaN(parsed) && value !== "-" && value !== "-." && value !== ".") {
+      updatePlayerGains(0);
+    }
+  };
+
+  useEffect(() => {
+    setGainsInputs(() => {
+      return players.map((p) => {
+        if (!p.gains) return "";
+        return chipMode
+          ? ((p.gains / dollarPerBuyIn) * chipsPerBuyIn).toString()
+          : p.gains.toString();
+      });
+    });
+  }, [players, chipMode, chipsPerBuyIn, dollarPerBuyIn]);
+
+  const displayBuyIns = (player: Player) => {
+    if (!player.buyIns) return 0;
+    return chipMode
+      ? convertToChips(player.buyIns).toString()
+      : player.buyIns.toString();
   };
 
   return (
@@ -71,48 +135,55 @@ export default function GameTable({
       <TableHeader>
         <TableRow>
           <TableHead>Player</TableHead>
-          <TableHead>Buy Ins</TableHead>
-          <TableHead>Gains</TableHead>
+          <TableHead>Buy Ins {chipMode ? "(chips)" : "(dollars)"}</TableHead>
+          <TableHead>Gains {chipMode ? "(chips)" : "(dollars)"}</TableHead>
           <TableHead>Actions</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
-        {players.map((player, index) => (
-          <TableRow key={index}>
-            <TableCell>
-              <Input
-                type="text"
-                value={player.name}
-                onChange={(e) => handleChange(index, "name", e.target.value)}
-                className="border p-1 w-full"
-              />
-            </TableCell>
-            <TableCell>
-              <Input
-                type="text"
-                inputMode="decimal"
-                value={player.buyIns.toString()}
-                onChange={(e) => handleChange(index, "buyIns", e.target.value)}
-                className="border p-1 w-full"
-              />
-            </TableCell>
-            <TableCell>
-              <Input
-                type="text"
-                value={player.gains === 0 ? "" : player.gains.toString()}
-                onChange={(e) =>
-                  handleChangeGains(index, e.target.value.toString())
-                }
-                className="border p-1 w-full"
-              />
-            </TableCell>
-            <TableCell>
-              <Button variant="destructive" onClick={() => handleDelete(index)}>
-                Delete
-              </Button>
-            </TableCell>
-          </TableRow>
-        ))}
+        {players.map((player, index) => {
+          return (
+            <TableRow key={player.id}>
+              <TableCell className=" p-2">
+                <p>{player.name}</p>
+              </TableCell>
+              <TableCell className=" p-2">
+                <Input
+                  type="number"
+                  value={displayBuyIns(player)}
+                  onChange={(e) =>
+                    handleChange(index, "buyIns", e.target.value)
+                  }
+                  className="border p-1 w-full"
+                />
+              </TableCell>
+              <TableCell className=" p-2">
+                <Input
+                  type="text"
+                  value={gainsInputs[index]}
+                  onChange={(e) => handleChangeGains(index, e.target.value)}
+                />
+              </TableCell>
+              <TableCell>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="text-red-500 hover:bg-red-100 md:hidden"
+                  onClick={() => handleDelete(index)}
+                >
+                  <Trash2 className="w-4 h-4" />
+                </Button>
+                <Button
+                  variant="destructive"
+                  className="hidden md:inline-flex"
+                  onClick={() => handleDelete(index)}
+                >
+                  Delete
+                </Button>
+              </TableCell>
+            </TableRow>
+          );
+        })}
       </TableBody>
     </Table>
   );

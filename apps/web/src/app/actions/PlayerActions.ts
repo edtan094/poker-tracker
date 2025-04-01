@@ -40,8 +40,6 @@ const playerSchema = z
   .object({
     name: z.string().min(1, "Name is required").nullable().optional(),
     existingPlayerId: z.string().uuid().nullable().optional(),
-    buyIns: z.string().regex(/^\d+(\.\d{1,2})?$/, "Invalid buy-in amount"),
-    gains: z.string().regex(/^-?\d+(\.\d{1,2})?$/, "Invalid gains amount"),
   })
   .refine((data) => data.name || data.existingPlayerId, {
     message: "Either name or existingPlayerId is required",
@@ -56,8 +54,6 @@ export async function submitPlayer(
     const rawData = {
       name: formData.get("name") as string,
       existingPlayerId: formData.get("existingPlayerId") as string,
-      buyIns: formData.get("buyIns") as string,
-      gains: formData.get("gains") as string,
     };
 
     const validatedData = playerSchema.safeParse(rawData);
@@ -86,8 +82,6 @@ export async function submitPlayer(
       return {
         data: {
           ...player,
-          buyIns: validatedData.data.buyIns,
-          gains: validatedData.data.gains,
         },
         success: true,
         message: "User saved successfully!",
