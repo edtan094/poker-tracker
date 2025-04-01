@@ -39,6 +39,7 @@ export default function GameSettings({
             <Label>Chips Per Buy-In</Label>
             <Input
               type="number"
+              min={1}
               value={chipsPerBuyIn}
               onChange={(e) => setChipsPerBuyIn(+e.target.value)}
             />
@@ -47,6 +48,7 @@ export default function GameSettings({
             <Label>Dollar Per Buy-In</Label>
             <Input
               type="number"
+              min={1}
               value={dollarPerBuyIn}
               onChange={(e) => setDollarPerBuyIn(+e.target.value)}
             />

@@ -42,4 +42,5 @@ export const showMissingGainsMessage = (
       " in gains. Please check your inputs."
     );
   }
+  return null;
 };
