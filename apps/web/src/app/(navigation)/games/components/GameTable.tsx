@@ -31,7 +31,12 @@ export default function GameTable({
   dollarPerBuyIn,
 }: GameTableProps) {
   const [gainsInputs, setGainsInputs] = useState<string[]>(
-    players.map((p) => p.gains.toString())
+    players.map((p) => {
+      if (p.gains) {
+        return p.gains?.toString();
+      }
+      return "";
+    })
   );
 
   const debouncedUpdate = useCallback(
@@ -101,11 +106,14 @@ export default function GameTable({
 
   useEffect(() => {
     setGainsInputs(
-      players.map((p) =>
-        chipMode
-          ? ((p.gains / dollarPerBuyIn) * chipsPerBuyIn).toString()
-          : p.gains.toString()
-      )
+      players.map((p) => {
+        if (p.gains) {
+          return chipMode
+            ? ((p.gains / dollarPerBuyIn) * chipsPerBuyIn).toString()
+            : p.gains.toString();
+        }
+        return "";
+      })
     );
   }, [players, chipMode]);
 

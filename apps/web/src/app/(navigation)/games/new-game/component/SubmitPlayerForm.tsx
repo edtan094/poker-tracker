@@ -52,8 +52,6 @@ export default function SubmitPlayerForm({
             {
               id: state.data?.id,
               name: state.data?.name,
-              buyIns: parseFloat(state.data?.buyIns) || 0,
-              gains: parseFloat(state.data?.gains) || 0,
             },
           ])
         );
@@ -62,8 +60,6 @@ export default function SubmitPlayerForm({
           {
             id: state.data?.id,
             name: state.data?.name,
-            buyIns: parseFloat(state.data?.buyIns) || 0,
-            gains: parseFloat(state.data?.gains) || 0,
           },
         ];
       });
