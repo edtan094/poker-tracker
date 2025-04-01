@@ -10,6 +10,7 @@ import { Player } from "@prisma/client";
 import SubmitPlayerForm from "./component/SubmitPlayerForm";
 import { Input } from "@/components/ui/input";
 import GameSettings from "./component/GameSettings";
+import { calculateMissingGains } from "./lib/calculateMissingGains";
 
 export type UserFormData = {
   name: string;
@@ -105,6 +106,8 @@ export default function NewGamePage() {
     }
   }, []);
 
+  const totalBuyInsInChips = (totalBuyIns / dollarPerBuyIn) * chipsPerBuyIn;
+
   return (
     <div>
       <div className=" flex justify-center">
@@ -147,9 +150,20 @@ export default function NewGamePage() {
       </div>
       <div className=" border-t mt-4 pt-4 text-green-500">
         <p className=" mb-2 ">Total Buy Ins in $$$: ${totalBuyIns}</p>
-        <p>
-          Total Buy Ins in Chips:{" "}
-          {(totalBuyIns / dollarPerBuyIn) * chipsPerBuyIn} Chips
+        <p>Total Buy Ins in Chips: {totalBuyInsInChips} Chips</p>
+        <p className=" text-red-500">
+          {calculateMissingGains(
+            players,
+            chipMode,
+            dollarPerBuyIn,
+            chipsPerBuyIn
+          ) &&
+            calculateMissingGains(
+              players,
+              chipMode,
+              dollarPerBuyIn,
+              chipsPerBuyIn
+            )}
         </p>
       </div>
 
