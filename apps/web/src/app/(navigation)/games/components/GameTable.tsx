@@ -103,20 +103,29 @@ export default function GameTable({
         return newPlayers;
       });
     }
+    if (isNaN(parsed)) {
+      setPlayers((prevPlayers) => {
+        const newPlayers = [...prevPlayers];
+        newPlayers[index] = {
+          ...newPlayers[index],
+          gains: 0,
+        };
+        debouncedUpdate(newPlayers);
+        return newPlayers;
+      });
+    }
   };
 
   useEffect(() => {
-    setGainsInputs(
-      players.map((p) => {
-        if (p.gains) {
-          return chipMode
-            ? ((p.gains / dollarPerBuyIn) * chipsPerBuyIn).toString()
-            : p.gains.toString();
-        }
-        return "";
-      })
-    );
-  }, [players, chipMode]);
+    setGainsInputs((prev) => {
+      return players.map((p, i) => {
+        if (prev[i] !== undefined) return prev[i];
+        return chipMode
+          ? ((p.gains / dollarPerBuyIn) * chipsPerBuyIn).toString()
+          : p.gains.toString();
+      });
+    });
+  }, [players.length, chipMode]);
 
   return (
     <Table>
