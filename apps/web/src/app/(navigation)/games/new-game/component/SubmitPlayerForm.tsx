@@ -111,7 +111,7 @@ export default function SubmitPlayerForm({
             </p>
           )}
         </div>
-        <div className="grid grid-cols-4 items-center gap-4">
+        {/* <div className="grid grid-cols-4 items-center gap-4">
           <Label htmlFor="buyIns" className="text-right">
             Buy Ins
           </Label>
@@ -148,7 +148,7 @@ export default function SubmitPlayerForm({
               {state.errors.gains[0]}
             </p>
           )}
-        </div>
+        </div> */}
       </div>
       <div className="flex justify-between">
         <Button variant="default" type="submit" disabled={isPending}>

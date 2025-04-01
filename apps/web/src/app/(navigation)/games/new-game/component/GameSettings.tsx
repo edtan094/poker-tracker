@@ -1,48 +1,55 @@
-import { Input } from "@/components/ui/input";
+"use client";
 import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 
 type GameSettingsProps = {
-  showDollarAmount: boolean;
-  toggleShowDollarAmount: () => void;
-  moneyPerBuyIn?: number;
-  chipsPerBuyIn?: number;
-  setMoneyPerBuyIn: (value: number) => void;
-  setChipsPerBuyIn: (value: number) => void;
+  chipMode: boolean;
+  setChipMode: (v: boolean) => void;
+  chipsPerBuyIn: number;
+  setChipsPerBuyIn: (v: number) => void;
+  dollarPerBuyIn: number;
+  setDollarPerBuyIn: (v: number) => void;
 };
 
 export default function GameSettings({
-  showDollarAmount,
-  toggleShowDollarAmount,
-  moneyPerBuyIn,
+  chipMode,
+  setChipMode,
   chipsPerBuyIn,
-  setMoneyPerBuyIn,
   setChipsPerBuyIn,
+  dollarPerBuyIn,
+  setDollarPerBuyIn,
 }: GameSettingsProps) {
   return (
-    <div className="grid gap-4 py-4 border rounded p-4">
-      <div className="flex justify-center">
-        <p className="text-right">Game Settings</p>
-      </div>
-      <div className="grid grid-cols-4 items-center gap-4">
-        <Label htmlFor="chipOrDollar" className="text-right mr-4">
-          {showDollarAmount ? "Dollar Amount" : "Chip Amount"}
-        </Label>
+    <div className="mb-6 space-y-4">
+      <div className="flex items-center space-x-2">
         <Switch
-          onCheckedChange={toggleShowDollarAmount}
-          checked={!showDollarAmount}
+          id="toggle-chip-mode"
+          checked={chipMode}
+          onCheckedChange={setChipMode}
         />
-      </div>
-      <div className="grid grid-cols-4 items-center gap-4">
-        <Label htmlFor="moneyPerBuyIn" className=" text-right">
-          {showDollarAmount ? "$ Per Buy In" : "Chips Per Buy In"}
+        <Label htmlFor="toggle-chip-mode">
+          {chipMode ? "Chip Mode" : "Dollar Mode"}
         </Label>
-        <Input
-          id="moneyPerBuyIn"
-          name="moneyPerBuyIn"
-          className="col-span-3 md:w-1/2"
-          type="number"
-        />
+      </div>
+
+      <div className="flex items-center gap-4">
+        <div>
+          <Label>Chips Per Buy-In</Label>
+          <Input
+            type="number"
+            value={chipsPerBuyIn}
+            onChange={(e) => setChipsPerBuyIn(+e.target.value)}
+          />
+        </div>
+        <div>
+          <Label>Dollar Per Buy-In</Label>
+          <Input
+            type="number"
+            value={dollarPerBuyIn}
+            onChange={(e) => setDollarPerBuyIn(+e.target.value)}
+          />
+        </div>
       </div>
     </div>
   );

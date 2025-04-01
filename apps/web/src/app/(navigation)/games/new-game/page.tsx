@@ -26,13 +26,9 @@ export type ActionResponse = {
   data?: {
     id: string;
     name: string;
-    buyIns?: string | undefined;
-    gains?: string | undefined;
   };
   inputs?: {
     name: string;
-    buyIns?: string | undefined;
-    gains?: string | undefined;
   };
 };
 
@@ -48,16 +44,12 @@ export default function NewGamePage() {
   const [isNewPlayer, setIsNewPlayer] = useState(true);
   const [loading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
-  const [showDollarAmount, setShowDollarAmount] = useState(false);
-  const [chipsPerBuyIn, setChipsPerBuyIn] = useState(0);
-  const [moneyPerBuyIn, setMoneyPerBuyIn] = useState(0);
+  const [chipMode, setChipMode] = useState(true);
+  const [chipsPerBuyIn, setChipsPerBuyIn] = useState(500);
+  const [dollarPerBuyIn, setDollarPerBuyIn] = useState(5);
 
   const toggleExistingOrNewPlayer = () => {
     setIsNewPlayer(!isNewPlayer);
-  };
-
-  const toggleShowDollarAmount = () => {
-    setShowDollarAmount(!showDollarAmount);
   };
 
   const handleDelete = (index: number) => {
@@ -116,12 +108,12 @@ export default function NewGamePage() {
       <div className="mb-4 border-b pb-4">
         <div className=" my-8">
           <GameSettings
-            toggleShowDollarAmount={toggleShowDollarAmount}
-            showDollarAmount={showDollarAmount}
-            moneyPerBuyIn={moneyPerBuyIn}
+            chipMode={chipMode}
+            setChipMode={setChipMode}
             chipsPerBuyIn={chipsPerBuyIn}
-            setMoneyPerBuyIn={setMoneyPerBuyIn}
             setChipsPerBuyIn={setChipsPerBuyIn}
+            dollarPerBuyIn={dollarPerBuyIn}
+            setDollarPerBuyIn={setDollarPerBuyIn}
           />
         </div>
         <SubmitPlayerForm
