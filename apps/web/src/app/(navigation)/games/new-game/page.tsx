@@ -1,7 +1,7 @@
 "use client";
 import GameTable from "../components/GameTable";
 import { Button } from "@/components/ui/button";
-import { useActionState, useEffect, useState } from "react";
+import { useActionState, useEffect, useMemo, useState } from "react";
 import { createGame } from "@/app/actions/GameActions";
 import { getPlayers, submitPlayer } from "@/app/actions/PlayerActions";
 import { Player } from "@prisma/client";
@@ -103,6 +103,15 @@ export default function NewGamePage() {
     }
   }, []);
 
+  const missingGainsMessage = useMemo(() => {
+    return showMissingGainsMessage(
+      players,
+      chipMode,
+      dollarPerBuyIn,
+      chipsPerBuyIn
+    );
+  }, [players, chipMode, dollarPerBuyIn, chipsPerBuyIn]);
+
   const totalBuyInsInChips = (totalBuyIns / dollarPerBuyIn) * chipsPerBuyIn;
 
   return (
@@ -151,18 +160,9 @@ export default function NewGamePage() {
           Total Buy Ins in Chips: {totalBuyInsInChips} Chips
         </p>
         <p className=" text-red-500">
-          {showMissingGainsMessage(
-            players,
-            chipMode,
-            dollarPerBuyIn,
-            chipsPerBuyIn
-          ) &&
-            showMissingGainsMessage(
-              players,
-              chipMode,
-              dollarPerBuyIn,
-              chipsPerBuyIn
-            )}
+          {missingGainsMessage && (
+            <p className="text-red-500">{missingGainsMessage}</p>
+          )}
         </p>
       </div>
 
