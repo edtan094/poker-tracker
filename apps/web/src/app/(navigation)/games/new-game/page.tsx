@@ -159,11 +159,9 @@ export default function NewGamePage() {
         <p className=" mb-2">
           Total Buy Ins in Chips: {totalBuyInsInChips} Chips
         </p>
-        <p className=" text-red-500">
-          {missingGainsMessage && (
-            <p className="text-red-500">{missingGainsMessage}</p>
-          )}
-        </p>
+        {missingGainsMessage && (
+          <p className="text-red-500">{missingGainsMessage}</p>
+        )}
       </div>
 
       <div className=" mt-4">

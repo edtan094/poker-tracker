@@ -87,32 +87,28 @@ export default function GameTable({
       return newInputs;
     });
 
+    const updatePlayerGains = (gainValue: number) => {
+      setPlayers((prevPlayers) => {
+        const newPlayers = [...prevPlayers];
+        newPlayers[index] = {
+          ...newPlayers[index],
+          gains: gainValue,
+        };
+        debouncedUpdate(newPlayers);
+        return newPlayers;
+      });
+    };
+
     const parsed = parseFloat(value);
     if (!isNaN(parsed)) {
       const dollarValue = chipMode
         ? (parsed / chipsPerBuyIn) * dollarPerBuyIn
         : parsed;
 
-      setPlayers((prevPlayers) => {
-        const newPlayers = [...prevPlayers];
-        newPlayers[index] = {
-          ...newPlayers[index],
-          gains: dollarValue,
-        };
-        debouncedUpdate(newPlayers);
-        return newPlayers;
-      });
+      updatePlayerGains(dollarValue);
     }
     if (isNaN(parsed) && value !== "-" && value !== "-." && value !== ".") {
-      setPlayers((prevPlayers) => {
-        const newPlayers = [...prevPlayers];
-        newPlayers[index] = {
-          ...newPlayers[index],
-          gains: 0,
-        };
-        debouncedUpdate(newPlayers);
-        return newPlayers;
-      });
+      updatePlayerGains(0);
     }
   };
 
@@ -127,6 +123,13 @@ export default function GameTable({
     });
   }, [players, chipMode, chipsPerBuyIn, dollarPerBuyIn]);
 
+  const displayBuyIns = (player: Player) => {
+    if (!player.buyIns) return 0;
+    return chipMode
+      ? convertToChips(player.buyIns).toString()
+      : player.buyIns.toString();
+  };
+
   return (
     <Table>
       <TableHeader>
@@ -139,12 +142,6 @@ export default function GameTable({
       </TableHeader>
       <TableBody>
         {players.map((player, index) => {
-          const displayBuyIns = () => {
-            if (!player.buyIns) return 0;
-            return chipMode
-              ? convertToChips(player.buyIns).toString()
-              : player.buyIns.toString();
-          };
           return (
             <TableRow key={player.id}>
               <TableCell className=" p-2">
@@ -153,7 +150,7 @@ export default function GameTable({
               <TableCell className=" p-2">
                 <Input
                   type="number"
-                  value={displayBuyIns()}
+                  value={displayBuyIns(player)}
                   onChange={(e) =>
                     handleChange(index, "buyIns", e.target.value)
                   }
@@ -163,7 +160,7 @@ export default function GameTable({
               <TableCell className=" p-2">
                 <Input
                   type="text"
-                  value={gainsInputs[index] === "0" ? "" : gainsInputs[index]}
+                  value={gainsInputs[index]}
                   onChange={(e) => handleChangeGains(index, e.target.value)}
                 />
               </TableCell>
