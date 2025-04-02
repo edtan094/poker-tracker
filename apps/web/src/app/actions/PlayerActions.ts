@@ -63,8 +63,6 @@ export async function submitPlayer(
 
     const validatedData = playerSchema.safeParse(rawData);
 
-    console.log("validatedData", validatedData);
-
     if (!validatedData.success) {
       return {
         success: false,
