@@ -1,4 +1,4 @@
-import { Users, CirclePlus, Home, LucideIcon } from "lucide-react";
+import { Users, Home, LucideIcon, Gamepad2Icon } from "lucide-react";
 
 type Submenu = {
   href: string;
@@ -33,17 +33,27 @@ export function getMenuList(pathname: string): Group[] {
       ],
     },
     {
-      groupLabel: "",
+      groupLabel: "Games",
       menus: [
         {
           href: "/games",
-          label: "Create New Game",
-          icon: CirclePlus,
+          label: "Game",
+          icon: Gamepad2Icon,
+          submenus: [
+            {
+              href: "/games/new-game",
+              label: "Create Game",
+            },
+            {
+              href: "/games/edit-game",
+              label: "Edit Game",
+            },
+          ],
         },
       ],
     },
     {
-      groupLabel: "",
+      groupLabel: "Scores",
       menus: [
         {
           href: "/leaderboards",
