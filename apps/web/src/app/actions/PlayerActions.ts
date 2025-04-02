@@ -5,7 +5,12 @@ import { ActionResponse } from "../(navigation)/games/new-game/page";
 import { z } from "zod";
 
 export async function getPlayers() {
-  return await prisma.player.findMany();
+  const playerGames = await prisma.player.findMany();
+  return playerGames.map((pg) => ({
+    ...pg,
+    buyIns: pg.buyIns.toNumber(),
+    gains: pg.gains.toNumber(),
+  }));
 }
 
 export async function addPlayer(name: string) {
