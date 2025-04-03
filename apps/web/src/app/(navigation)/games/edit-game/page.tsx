@@ -1,5 +1,28 @@
 import { prisma } from "@/lib/prisma";
-import { Decimal } from "@prisma/client/runtime/library";
+import { GameForClient, GameForServer } from "./types";
+import ListOfGames from "./ListOfGames";
+
+export function convertGameDataToNumbers(
+  data: GameForServer[]
+): GameForClient[] {
+  return data.map((game) => ({
+    ...game,
+    playerGames: game.playerGames.map((pg) => {
+      return {
+        ...pg,
+        buyIns: pg.buyIns.toNumber(),
+        gains: pg.gains.toNumber(),
+        netProfit: pg.netProfit.toNumber(),
+        player: {
+          ...pg.player,
+          buyIns: pg.player.buyIns.toNumber(),
+          gains: pg.player.gains.toNumber(),
+        },
+      };
+    }),
+  }));
+}
+
 export async function getAllGamesWithPlayers() {
   const games = await prisma.game.findMany({
     orderBy: {
@@ -13,16 +36,24 @@ export async function getAllGamesWithPlayers() {
       },
     },
   });
-  return games;
+
+  const data = convertGameDataToNumbers(games);
+  return data;
 }
 
 export default async function Games() {
   const games = await getAllGamesWithPlayers();
-  console.log("games", games);
+
   return (
     <div>
-      <h1>Games</h1>
+      <h1 className="font-bold text-3xl">Games</h1>
       <p>List of games that can be edited.</p>
+
+      <div className=" flex justify-center">
+        <div>
+          <ListOfGames games={games} />
+        </div>
+      </div>
     </div>
   );
 }
