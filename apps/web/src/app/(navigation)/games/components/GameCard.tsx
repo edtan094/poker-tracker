@@ -9,36 +9,45 @@ import {
 } from "@/components/ui/card";
 import { GameForClient } from "../edit-game/types";
 import { Button } from "@/components/ui/button";
+import React from "react";
+import { EditIcon } from "lucide-react";
 
 type GameCardProps = {
   game: GameForClient;
+  index: number;
 };
 
-export default function GameCard({ game }: GameCardProps) {
+export default function GameCard({ game, index }: GameCardProps) {
+  const numberOfPlayers = game.playerGames.length;
+
+  const totalBuyIns = game.playerGames.reduce((acc, pg) => {
+    return acc + pg.buyIns;
+  }, 0);
+
+  const formattedDate = new Intl.DateTimeFormat("en-US", {
+    dateStyle: "short",
+    timeStyle: "short",
+  }).format(game.createdAt);
+
   return (
     <Card key={game.id} className=" mb-4">
       <CardHeader>
-        <CardTitle>Game Id: {game.id}</CardTitle>
+        <CardTitle className=" text-lg md:text-3xl">
+          Game # {index + 1} - {formattedDate}
+        </CardTitle>
         <CardDescription></CardDescription>
       </CardHeader>
       <CardContent>
         <div>
-          <p>Scores</p>
-          <div>
-            {game.playerGames.map((pg) => {
-              return (
-                <div key={pg.id}>
-                  <p>Player: {pg.player.name}</p>
-                  <p>Buy Ins: {pg.buyIns}</p>
-                  <p>Gains: {pg.gains}</p>
-                </div>
-              );
-            })}
-          </div>
+          <p>Number of Players: {numberOfPlayers} </p>
+          <p>Total Buy Ins: ${totalBuyIns}</p>
         </div>
       </CardContent>
       <CardFooter>
-        <Button>Edit</Button>
+        <Button>
+          <EditIcon />
+          Edit
+        </Button>
       </CardFooter>
     </Card>
   );

@@ -7,8 +7,8 @@ type ListOfGamesProps = {
 
 export default function ListOfGames({ games }: ListOfGamesProps) {
   {
-    return games.map((game) => {
-      return <GameCard key={game.id} game={game} />;
+    return games.map((game, index) => {
+      return <GameCard key={game.id} game={game} index={index} />;
     });
   }
 }

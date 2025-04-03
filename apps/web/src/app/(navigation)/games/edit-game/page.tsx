@@ -46,9 +46,6 @@ export default async function Games() {
 
   return (
     <div>
-      <h1 className="font-bold text-3xl">Games</h1>
-      <p>List of games that can be edited.</p>
-
       <div className=" flex justify-center">
         <div>
           <ListOfGames games={games} />
