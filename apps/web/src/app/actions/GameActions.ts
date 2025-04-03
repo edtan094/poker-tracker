@@ -89,14 +89,14 @@ export async function updatePlayerScore(
 export async function getPlayersByGame(gameId: string) {
   const playerGames = await prisma.playerGame.findMany({
     where: { gameId },
-    include: { player: true }, // Include player details
+    include: { player: true },
   });
 
   return playerGames.map(({ player, buyIns, gains, netProfit }) => ({
     id: player.id,
     name: player.name,
-    buyIns,
-    gains,
-    netProfit,
+    buyIns: buyIns.toNumber(),
+    gains: gains.toNumber(),
+    netProfit: netProfit.toNumber(),
   }));
 }
