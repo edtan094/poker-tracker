@@ -11,6 +11,7 @@ import { GameForClient } from "../edit-game/types";
 import { Button } from "@/components/ui/button";
 import React from "react";
 import { EditIcon } from "lucide-react";
+import Link from "next/link";
 
 type GameCardProps = {
   game: GameForClient;
@@ -44,10 +45,12 @@ export default function GameCard({ game, index }: GameCardProps) {
         </div>
       </CardContent>
       <CardFooter>
-        <Button>
-          <EditIcon />
-          Edit
-        </Button>
+        <Link href={`/games/edit-game/${game.id}`} className=" w-1/2">
+          <Button>
+            <EditIcon />
+            Edit
+          </Button>
+        </Link>
       </CardFooter>
     </Card>
   );

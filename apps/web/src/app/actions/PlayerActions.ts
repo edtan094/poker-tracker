@@ -34,7 +34,19 @@ export async function getPlayerGamesByGameId(gameId: string) {
       throw new Error("No players found for this game.");
     }
 
-    return playerGames;
+    const formattedPlayerGames = playerGames.map((pg) => ({
+      ...pg,
+      buyIns: pg.buyIns.toNumber(),
+      gains: pg.gains.toNumber(),
+      netProfit: pg.netProfit.toNumber(),
+      player: {
+        ...pg.player,
+        buyIns: pg.player.buyIns.toNumber(),
+        gains: pg.player.gains.toNumber(),
+      },
+    }));
+
+    return formattedPlayerGames;
   } catch (error) {
     console.error("Error fetching PlayerGames:", error.message);
     throw new Error("Failed to fetch PlayerGames.");
