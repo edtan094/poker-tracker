@@ -11,7 +11,7 @@ export default async function EditGamePage(props: {
   return (
     <div>
       <div className=" flex justify-center">
-        <h1>Edit Game</h1>
+        <h1 className=" font-bold text-3xl">Edit Game</h1>
       </div>
       <Game playerGames={playerGames} isEdit={!!gameId} />
     </div>
