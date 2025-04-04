@@ -7,7 +7,7 @@ export default async function EditGamePage(props: {
   const { gameId } = await props.params;
 
   const playerGames = await getPlayerGamesByGameId(gameId);
-  console.log("playerGames", playerGames);
+
   return (
     <div>
       <div className=" flex justify-center">
