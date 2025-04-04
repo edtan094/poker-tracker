@@ -1,4 +1,5 @@
 import { getPlayerGamesByGameId } from "@/app/actions/PlayerActions";
+import Game from "../../components/Game";
 
 export default async function EditGamePage(props: {
   params: Promise<{ gameId: string }>;
@@ -9,8 +10,10 @@ export default async function EditGamePage(props: {
   console.log("playerGames", playerGames);
   return (
     <div>
-      <h1>Edit Game</h1>
-      <p>Game editing functionality will be implemented here.</p>
+      <div className=" flex justify-center">
+        <h1>Edit Game</h1>
+      </div>
+      <Game playerGames={playerGames} isEdit={!!gameId} />
     </div>
   );
 }
