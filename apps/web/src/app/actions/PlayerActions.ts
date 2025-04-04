@@ -3,6 +3,7 @@
 import { prisma } from "@/lib/prisma";
 import { ActionResponse } from "../(navigation)/games/new-game/page";
 import { z } from "zod";
+import { PlayerGameForClient } from "../(navigation)/games/edit-game/types";
 
 export async function getPlayers() {
   const playerGames = await prisma.player.findMany();
@@ -21,7 +22,9 @@ export async function addPlayer(name: string) {
   return newPlayer;
 }
 
-export async function getPlayerGamesByGameId(gameId: string) {
+export async function getPlayerGamesByGameId(
+  gameId: string
+): Promise<PlayerGameForClient[]> {
   try {
     const playerGames = await prisma.playerGame.findMany({
       where: { gameId: gameId },
