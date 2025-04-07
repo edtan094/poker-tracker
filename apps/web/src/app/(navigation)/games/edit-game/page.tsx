@@ -2,32 +2,8 @@ import { prisma } from "@/lib/prisma";
 import { GameForClient, GameForServer } from "./types";
 import ListOfGames from "./ListOfGames";
 
-export function convertGameDataToNumbers(
-  data: GameForServer[]
-): GameForClient[] {
-  return data.map((game) => ({
-    ...game,
-    playerGames: game.playerGames.map((pg) => {
-      return {
-        ...pg,
-        buyIns: pg.buyIns.toNumber(),
-        gains: pg.gains.toNumber(),
-        netProfit: pg.netProfit.toNumber(),
-        player: {
-          ...pg.player,
-          buyIns: pg.player.buyIns.toNumber(),
-          gains: pg.player.gains.toNumber(),
-        },
-      };
-    }),
-  }));
-}
-
-export async function getAllGamesWithPlayers() {
+async function getAllGames(): Promise<GameForClient[]> {
   const games = await prisma.game.findMany({
-    orderBy: {
-      createdAt: "desc",
-    },
     include: {
       playerGames: {
         include: {
@@ -37,12 +13,28 @@ export async function getAllGamesWithPlayers() {
     },
   });
 
-  const data = convertGameDataToNumbers(games);
-  return data;
+  if (!games.length) {
+    throw new Error("No games found.");
+  }
+
+  return games.map((game) => ({
+    ...game,
+    playerGames: game.playerGames.map((pg) => ({
+      ...pg,
+      buyIns: pg.buyIns.toNumber(),
+      gains: pg.gains.toNumber(),
+      netProfit: pg.netProfit.toNumber(),
+      player: {
+        ...pg.player,
+        buyIns: pg.player.buyIns.toNumber(),
+        gains: pg.player.gains.toNumber(),
+      },
+    })),
+  })) as GameForClient[];
 }
 
 export default async function Games() {
-  const games = await getAllGamesWithPlayers();
+  const games = await getAllGames();
 
   return (
     <div>

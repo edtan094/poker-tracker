@@ -28,7 +28,7 @@ export default function GameCard({ game, index }: GameCardProps) {
   const formattedDate = new Intl.DateTimeFormat("en-US", {
     dateStyle: "short",
     timeStyle: "short",
-  }).format(game.createdAt);
+  }).format(game.dateOfGame);
 
   return (
     <Card key={game.id} className=" mb-4">

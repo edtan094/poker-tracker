@@ -22,6 +22,9 @@ export interface GameForClient {
   id: string;
   createdAt: Date; // ISO date string
   playerGames: PlayerGameForClient[];
+  dollarPerBuyIn: number;
+  chipsPerBuyIn: number;
+  dateOfGame: Date; // ISO date string
 }
 
 export interface PlayerForServer {
@@ -46,4 +49,7 @@ export interface GameForServer {
   id: string;
   createdAt: Date; // ISO date string
   playerGames: PlayerGameForServer[];
+  dollarPerBuyIn: number;
+  chipsPerBuyIn: number;
+  dateOfGame: Date; //
 }
