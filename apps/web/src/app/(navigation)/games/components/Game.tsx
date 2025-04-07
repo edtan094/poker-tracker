@@ -9,7 +9,7 @@ import { getPlayers, submitPlayer } from "@/app/actions/PlayerActions";
 import { Player } from "@prisma/client";
 import { createGame } from "@/app/actions/GameActions";
 import { showMissingGainsMessage } from "../new-game/lib/calculateMissingGains";
-import { PlayerGameForClient } from "../edit-game/types";
+import { GameForClient, PlayerGameForClient } from "../edit-game/types";
 
 export type UserFormData = {
   name: string;
@@ -38,11 +38,12 @@ const initialState: ActionResponse = {
 };
 
 type GameProps = {
-  playerGames?: PlayerGameForClient[];
+  // playerGames?: PlayerGameForClient[];
+  game: GameForClient;
   isEdit?: boolean;
 };
 
-export default function Game({ playerGames, isEdit }: GameProps) {
+export default function Game({ game, isEdit }: GameProps) {
   const [state, action, isPending] = useActionState(submitPlayer, initialState);
   const [players, setPlayers] = useState<Player[]>([]);
   const [allPlayers, setAllPlayers] = useState<Player[]>([]);
@@ -108,8 +109,8 @@ export default function Game({ playerGames, isEdit }: GameProps) {
   }, [players.length]);
 
   useEffect(() => {
-    if (isEdit && playerGames) {
-      const playersFromExistingGame = playerGames?.map((playerGame) => {
+    if (isEdit && game) {
+      const playersFromExistingGame = game.playerGames?.map((playerGame) => {
         return {
           id: playerGame.player.id,
           name: playerGame.player.name,
@@ -119,6 +120,9 @@ export default function Game({ playerGames, isEdit }: GameProps) {
       });
 
       setPlayers(playersFromExistingGame);
+      setDate(game.dateOfGame);
+      setChipsPerBuyIn(game.chipsPerBuyIn);
+      setDollarPerBuyIn(game.dollarPerBuyIn);
       return;
     }
     const playersLocalStorage = localStorage.getItem("players");
