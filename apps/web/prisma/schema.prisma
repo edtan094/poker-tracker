@@ -26,10 +26,13 @@ model Player {
 }
 
 model Game {
-  id         String        @id @default(uuid())
+  id         String        @id @default(uuid()) 
   createdAt  DateTime      @default(now())
-
+updatedAt       DateTime?      @updatedAt
+dateOfGame    DateTime     @default(now())
   playerGames PlayerGame[]  // Relation to PlayerGame model
+chipsPerBuyIn   Int           @default(500)
+  dollarPerBuyIn  Float         @default(5)
 }
 
 model PlayerGame {
