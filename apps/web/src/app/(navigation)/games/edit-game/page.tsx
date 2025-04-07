@@ -11,6 +11,7 @@ async function getAllGames(): Promise<GameForClient[]> {
         },
       },
     },
+    orderBy: { dateOfGame: "desc" },
   });
 
   if (!games.length) {

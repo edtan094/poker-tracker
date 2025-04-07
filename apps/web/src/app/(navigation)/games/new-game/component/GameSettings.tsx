@@ -2,6 +2,7 @@
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
+import { DatePicker } from "./DatePicker";
 
 type GameSettingsProps = {
   chipMode: boolean;
@@ -10,6 +11,8 @@ type GameSettingsProps = {
   setChipsPerBuyIn: (v: number) => void;
   dollarPerBuyIn: number;
   setDollarPerBuyIn: (v: number) => void;
+  date: Date;
+  setDate: React.Dispatch<React.SetStateAction<Date>>;
 };
 
 export default function GameSettings({
@@ -19,6 +22,8 @@ export default function GameSettings({
   setChipsPerBuyIn,
   dollarPerBuyIn,
   setDollarPerBuyIn,
+  date,
+  setDate,
 }: GameSettingsProps) {
   return (
     <div className=" flex justify-center">
@@ -52,6 +57,14 @@ export default function GameSettings({
               value={dollarPerBuyIn}
               onChange={(e) => setDollarPerBuyIn(+e.target.value)}
             />
+          </div>
+        </div>
+        <div>
+          <div>
+            <Label htmlFor="date">Date of Game</Label>
+          </div>
+          <div>
+            <DatePicker date={date} setDate={setDate} />
           </div>
         </div>
       </div>

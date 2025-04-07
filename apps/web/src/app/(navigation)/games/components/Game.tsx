@@ -52,7 +52,7 @@ export default function Game({ playerGames, isEdit }: GameProps) {
   const [chipMode, setChipMode] = useState(true);
   const [chipsPerBuyIn, setChipsPerBuyIn] = useState(500);
   const [dollarPerBuyIn, setDollarPerBuyIn] = useState(5);
-
+  const [date, setDate] = useState<Date>(new Date());
   const toggleExistingOrNewPlayer = () => {
     setIsNewPlayer(!isNewPlayer);
   };
@@ -76,7 +76,7 @@ export default function Game({ playerGames, isEdit }: GameProps) {
     setError("");
 
     try {
-      await createGame(players);
+      await createGame(players, date, chipsPerBuyIn, dollarPerBuyIn);
     } catch (error) {
       console.error("Error creating game:", error);
       setError("Failed to create game. Please try again.");
@@ -160,6 +160,8 @@ export default function Game({ playerGames, isEdit }: GameProps) {
             setChipsPerBuyIn={setChipsPerBuyIn}
             dollarPerBuyIn={dollarPerBuyIn}
             setDollarPerBuyIn={setDollarPerBuyIn}
+            date={date}
+            setDate={setDate}
           />
         </div>
       </div>

@@ -15,10 +15,11 @@ import Link from "next/link";
 
 type GameCardProps = {
   game: GameForClient;
+  length: number;
   index: number;
 };
 
-export default function GameCard({ game, index }: GameCardProps) {
+export default function GameCard({ game, length, index }: GameCardProps) {
   const numberOfPlayers = game.playerGames.length;
 
   const totalBuyIns = game.playerGames.reduce((acc, pg) => {
@@ -26,15 +27,14 @@ export default function GameCard({ game, index }: GameCardProps) {
   }, 0);
 
   const formattedDate = new Intl.DateTimeFormat("en-US", {
-    dateStyle: "short",
-    timeStyle: "short",
+    dateStyle: "long",
   }).format(game.dateOfGame);
 
   return (
     <Card key={game.id} className=" mb-4">
       <CardHeader>
         <CardTitle className=" text-lg md:text-3xl">
-          Game # {index + 1} - {formattedDate}
+          Game # {length - index} - {formattedDate}
         </CardTitle>
         <CardDescription></CardDescription>
       </CardHeader>

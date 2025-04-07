@@ -6,10 +6,15 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
 export async function createGame(
-  players: { id: string; buyIns: number; gains: number }[]
+  players: { id: string; buyIns: number; gains: number }[],
+  date: Date,
+  chipsPerBuyIn: number,
+  dollarPerBuyIn: number
 ) {
   const game = await prisma.$transaction(async (prisma) => {
-    const game = await prisma.game.create({ data: {} });
+    const game = await prisma.game.create({
+      data: { dateOfGame: date, chipsPerBuyIn, dollarPerBuyIn },
+    });
 
     await prisma.playerGame.createMany({
       data: players.map(({ id, buyIns, gains }) => ({
