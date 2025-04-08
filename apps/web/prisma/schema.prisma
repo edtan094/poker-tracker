@@ -11,35 +11,38 @@ generator client {
 // }
 
 datasource db {
-  provider  = "postgresql"
-  url  	    = env("DATABASE_URL")
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 model Player {
-  id        String        @id @default(uuid())
+  id        String   @id @default(uuid())
   name      String
-  buyIns     Decimal
-  gains     Decimal       @default(0)
-  createdAt DateTime      @default(now())
+  buyIns    Decimal
+  gains     Decimal  @default(0)
+  createdAt DateTime @default(now())
 
-  playerGames PlayerGame[]  // Relation to PlayerGame model
+  playerGames PlayerGame[] // Relation to PlayerGame model
 }
 
 model Game {
-  id         String        @id @default(uuid())
-  createdAt  DateTime      @default(now())
-
-  playerGames PlayerGame[]  // Relation to PlayerGame model
+  id             String       @id @default(uuid())
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime?    @updatedAt
+  dateOfGame     DateTime     @default(now())
+  playerGames    PlayerGame[] // Relation to PlayerGame model
+  chipsPerBuyIn  Int          @default(500)
+  dollarPerBuyIn Float        @default(5)
 }
 
 model PlayerGame {
-  id        String   @id @default(uuid())
+  id        String  @id @default(uuid())
   playerId  String
   gameId    String
-  buyIns     Decimal
-  gains     Decimal   @default(0)
-  netProfit Decimal   @default(0)
+  buyIns    Decimal
+  gains     Decimal @default(0)
+  netProfit Decimal @default(0)
 
-  player    Player   @relation(fields: [playerId], references: [id])
-  game      Game     @relation(fields: [gameId], references: [id])
+  player Player @relation(fields: [playerId], references: [id])
+  game   Game   @relation(fields: [gameId], references: [id])
 }
