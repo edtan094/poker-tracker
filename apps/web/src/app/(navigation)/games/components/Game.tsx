@@ -193,7 +193,7 @@ export default function Game({ game, isEdit }: GameProps) {
           variant="default"
           type="button"
           onClick={isEdit ? handleEditGame : handleCreateGame}
-          disabled={loading}
+          disabled={loading || players.length === 0}
         >
           {loading ? "Saving Game..." : "Save Game"}
         </Button>
