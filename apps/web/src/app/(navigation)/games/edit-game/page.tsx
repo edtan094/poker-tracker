@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/prisma";
-import { GameForClient, GameForServer } from "./types";
+import { GameForClient } from "./types";
 import ListOfGames from "./ListOfGames";
 
 async function getAllGames(): Promise<GameForClient[]> {
@@ -15,7 +15,7 @@ async function getAllGames(): Promise<GameForClient[]> {
   });
 
   if (!games.length) {
-    throw new Error("No games found.");
+    return [];
   }
 
   return games.map((game) => ({
