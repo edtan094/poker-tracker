@@ -38,7 +38,6 @@ const initialState: ActionResponse = {
 };
 
 type GameProps = {
-  // playerGames?: PlayerGameForClient[];
   game: GameForClient;
   isEdit?: boolean;
 };
