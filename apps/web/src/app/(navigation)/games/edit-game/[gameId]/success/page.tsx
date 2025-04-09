@@ -1,5 +1,5 @@
-import { getPlayerGamesByGameId } from "@/app/actions/PlayerActions";
 import SuccessPage from "../../../components/SuccessPage";
+import getGameById from "@/lib/db/getGamesById";
 
 export default async function EditGameSuccessOrFailure(props: {
   params: Promise<{ gameId: string }>;
@@ -8,11 +8,11 @@ export default async function EditGameSuccessOrFailure(props: {
 
   const { gameId } = params;
 
-  const playerGames = await getPlayerGamesByGameId(gameId);
+  const game = await getGameById(gameId);
 
   return (
     <>
-      <SuccessPage gameId={gameId} playerGames={playerGames} />
+      <SuccessPage gameId={gameId} game={game} />
     </>
   );
 }
