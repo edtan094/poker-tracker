@@ -86,7 +86,7 @@ export default function SubmitPlayerForm({
           {isNewPlayer ? (
             <Input
               id="name"
-              className="col-span-3 md:w-1/2"
+              className="col-span-3 md:w-full"
               name="name"
               type="text"
               minLength={1}

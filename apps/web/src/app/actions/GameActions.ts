@@ -11,6 +11,16 @@ export async function createGame(
   chipsPerBuyIn: number,
   dollarPerBuyIn: number
 ) {
+  if (!players || players.length === 0)
+    throw new Error("Players are required.");
+  if (!date) throw new Error("Date is required.");
+  if (!chipsPerBuyIn) throw new Error("Chips per buy-in are required.");
+  if (!dollarPerBuyIn) throw new Error("Dollar per buy-in is required.");
+  if (players.some((player) => !player.id))
+    throw new Error("Player ID is required.");
+  if (players.some((player) => player.buyIns === undefined))
+    throw new Error("Player buy-ins are required.");
+
   const game = await prisma.$transaction(async (prisma) => {
     const game = await prisma.game.create({
       data: { dateOfGame: date, chipsPerBuyIn, dollarPerBuyIn },
@@ -51,6 +61,75 @@ export async function createGame(
   redirect(`/games/new-game/${game.id}`);
 }
 
+export async function editGame(
+  gameId: string,
+  players: { id: string; buyIns: number; gains: number }[],
+  date: Date,
+  chipsPerBuyIn: number,
+  dollarPerBuyIn: number
+) {
+  if (!gameId || typeof gameId !== "string")
+    throw new Error("Game ID is required.");
+  if (!players || players.length === 0)
+    throw new Error("Players are required.");
+  if (!date) throw new Error("Date is required.");
+  if (!chipsPerBuyIn) throw new Error("Chips per buy-in are required.");
+  if (!dollarPerBuyIn) throw new Error("Dollar per buy-in is required.");
+  if (players.some((player) => !player.id))
+    throw new Error("Player ID is required.");
+  if (players.some((player) => player.buyIns === undefined))
+    throw new Error("Player buy-ins are required.");
+
+  const game = await prisma.game.findUnique({
+    where: { id: gameId },
+  });
+
+  if (!game) throw new Error("Game not found.");
+
+  await prisma.$transaction(async (prisma) => {
+    await prisma.game.update({
+      where: { id: gameId },
+      data: { dateOfGame: date, chipsPerBuyIn, dollarPerBuyIn },
+    });
+
+    await prisma.playerGame.deleteMany({
+      where: { gameId },
+    });
+
+    await prisma.playerGame.createMany({
+      data: players.map(({ id, buyIns, gains }) => ({
+        gameId,
+        playerId: id,
+        buyIns: new Decimal(buyIns),
+        gains: new Decimal(gains),
+      })),
+    });
+
+    for (const { id } of players) {
+      const totalGains = await prisma.playerGame.aggregate({
+        where: { playerId: id },
+        _sum: { gains: true },
+      });
+
+      const totalBuyIns = await prisma.playerGame.aggregate({
+        where: { playerId: id },
+        _sum: { buyIns: true },
+      });
+
+      await prisma.player.update({
+        where: { id },
+        data: {
+          gains: new Decimal(totalGains._sum.gains || 0),
+          buyIns: new Decimal(totalBuyIns._sum.buyIns || 0),
+        },
+      });
+    }
+  });
+
+  revalidatePath("/leaderboards");
+  redirect(`/games/edit-game/${game.id}/success`);
+}
+
 export async function addPlayerToGame(
   gameId: string,
   playerId: string,
@@ -89,19 +168,4 @@ export async function updatePlayerScore(
   });
 
   revalidatePath(`/games/${gameId}`);
-}
-
-export async function getPlayersByGame(gameId: string) {
-  const playerGames = await prisma.playerGame.findMany({
-    where: { gameId },
-    include: { player: true },
-  });
-
-  return playerGames.map(({ player, buyIns, gains, netProfit }) => ({
-    id: player.id,
-    name: player.name,
-    buyIns: buyIns.toNumber(),
-    gains: gains.toNumber(),
-    netProfit: netProfit.toNumber(),
-  }));
 }
