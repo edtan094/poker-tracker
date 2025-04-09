@@ -9,7 +9,7 @@ import { getPlayers, submitPlayer } from "@/app/actions/PlayerActions";
 import { Player } from "@prisma/client";
 import { createGame, editGame } from "@/app/actions/GameActions";
 import { showMissingGainsMessage } from "../new-game/lib/calculateMissingGains";
-import { GameForClient, PlayerGameForClient } from "../edit-game/types";
+import { GameForClient } from "../edit-game/types";
 
 export type UserFormData = {
   name: string;
