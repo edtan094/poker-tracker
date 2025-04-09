@@ -1,7 +1,7 @@
 import { getPlayerGamesByGameId } from "@/app/actions/PlayerActions";
-import SuccessPage from "../../components/SuccessPage";
+import SuccessPage from "../../../components/SuccessPage";
 
-export default async function NewGamePage(props: {
+export default async function EditGameSuccessOrFailure(props: {
   params: Promise<{ gameId: string }>;
 }) {
   const params = await props.params;

@@ -7,7 +7,7 @@ import GameTable from "./GameTable";
 import { useActionState, useEffect, useMemo, useState } from "react";
 import { getPlayers, submitPlayer } from "@/app/actions/PlayerActions";
 import { Player } from "@prisma/client";
-import { createGame } from "@/app/actions/GameActions";
+import { createGame, editGame } from "@/app/actions/GameActions";
 import { showMissingGainsMessage } from "../new-game/lib/calculateMissingGains";
 import { GameForClient, PlayerGameForClient } from "../edit-game/types";
 
@@ -67,8 +67,18 @@ export default function Game({ game, isEdit }: GameProps) {
     });
   };
 
-  const handleEditGame = () => {
-    return;
+  const handleEditGame = async () => {
+    if (loading) return;
+    setIsLoading(true);
+    setError("");
+    try {
+      await editGame(game.id, players, date, chipsPerBuyIn, dollarPerBuyIn);
+    } catch (error) {
+      console.error("Error creating game:", error);
+      setError("Failed to create game. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleCreateGame = async () => {
