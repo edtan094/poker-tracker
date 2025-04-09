@@ -16,9 +16,9 @@ import {
 type DatePickerProp = {
   date: Date;
   setDate: React.Dispatch<React.SetStateAction<Date>>;
+  className?: string;
 };
-
-export function DatePicker({ date, setDate }: DatePickerProp) {
+export function DatePicker({ date, setDate, className }: DatePickerProp) {
   return (
     <Popover>
       <PopoverTrigger asChild>
@@ -26,7 +26,8 @@ export function DatePicker({ date, setDate }: DatePickerProp) {
           variant={"outline"}
           className={cn(
             "w-[280px] justify-start text-left font-normal",
-            !date && "text-muted-foreground"
+            !date && "text-muted-foreground",
+            className
           )}
         >
           <CalendarIcon />

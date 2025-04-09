@@ -64,7 +64,7 @@ export default function GameSettings({
             <Label htmlFor="date">Date of Game</Label>
           </div>
           <div>
-            <DatePicker date={date} setDate={setDate} />
+            <DatePicker date={date} setDate={setDate} className=" w-full" />
           </div>
         </div>
       </div>
