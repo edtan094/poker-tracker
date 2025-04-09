@@ -1,5 +1,5 @@
 import SuccessPage from "../../components/SuccessPage";
-import getGameById from "@/lib/db/getGamesById";
+import getGameById from "@/lib/db/getGameById";
 
 export default async function NewGamePage(props: {
   params: Promise<{ gameId: string }>;

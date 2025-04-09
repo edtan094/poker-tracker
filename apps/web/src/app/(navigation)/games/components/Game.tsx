@@ -73,8 +73,8 @@ export default function Game({ game, isEdit }: GameProps) {
     try {
       await editGame(game.id, players, date, chipsPerBuyIn, dollarPerBuyIn);
     } catch (error) {
-      console.error("Error creating game:", error);
-      setError("Failed to create game. Please try again.");
+      console.error("Error editing game:", error);
+      setError("Failed to edit game. Please try again.");
     } finally {
       setIsLoading(false);
     }

@@ -14,8 +14,8 @@ export default function SuccessPageHeader({ gameId }: SuccessPageHeaderProps) {
     <>
       <h1>
         {isEdit
-          ? "The game has been editted successfully!"
-          : "New Game has been entered succesfully!"}{" "}
+          ? "The game has been edited successfully!"
+          : "New Game has been entered successfully!"}{" "}
         Thank you for playing!
       </h1>
       <p>Game ID: {gameId}</p>

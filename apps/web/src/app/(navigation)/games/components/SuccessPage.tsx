@@ -38,8 +38,8 @@ export default async function SuccessPage({ gameId, game }: SuccessPageProps) {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {game.playerGames.map((games, index) => (
-            <TableRow key={index}>
+          {game.playerGames.map((games) => (
+            <TableRow key={game.id}>
               <TableCell>
                 <p>{games.player.name}</p>
               </TableCell>

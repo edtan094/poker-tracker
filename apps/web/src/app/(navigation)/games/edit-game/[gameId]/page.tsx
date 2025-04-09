@@ -1,5 +1,5 @@
 import Game from "../../components/Game";
-import getGameById from "@/lib/db/getGamesById";
+import getGameById from "@/lib/db/getGameById";
 
 export default async function EditGamePage(props: {
   params: Promise<{ gameId: string }>;
