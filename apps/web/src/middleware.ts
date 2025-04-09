@@ -30,5 +30,5 @@ async function isAuthenticated(req: NextRequest) {
 }
 
 export const config = {
-  matcher: "/games/:path*",
+  matcher: ["/games/new-game", "/games/edit-game/:path*"],
 };
