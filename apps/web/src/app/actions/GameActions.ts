@@ -11,6 +11,16 @@ export async function createGame(
   chipsPerBuyIn: number,
   dollarPerBuyIn: number
 ) {
+  if (!players || players.length === 0)
+    throw new Error("Players are required.");
+  if (!date) throw new Error("Date is required.");
+  if (!chipsPerBuyIn) throw new Error("Chips per buy-in are required.");
+  if (!dollarPerBuyIn) throw new Error("Dollar per buy-in is required.");
+  if (players.some((player) => !player.id))
+    throw new Error("Player ID is required.");
+  if (players.some((player) => player.buyIns === undefined))
+    throw new Error("Player buy-ins are required.");
+
   const game = await prisma.$transaction(async (prisma) => {
     const game = await prisma.game.create({
       data: { dateOfGame: date, chipsPerBuyIn, dollarPerBuyIn },
@@ -65,6 +75,11 @@ export async function editGame(
   if (!date) throw new Error("Date is required.");
   if (!chipsPerBuyIn) throw new Error("Chips per buy-in are required.");
   if (!dollarPerBuyIn) throw new Error("Dollar per buy-in is required.");
+  if (players.some((player) => !player.id))
+    throw new Error("Player ID is required.");
+  if (players.some((player) => player.buyIns === undefined))
+    throw new Error("Player buy-ins are required.");
+
   const game = await prisma.game.findUnique({
     where: { id: gameId },
   });
