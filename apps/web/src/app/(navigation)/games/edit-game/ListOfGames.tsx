@@ -36,6 +36,14 @@ export default function ListOfGames({ games }: ListOfGamesProps) {
     }
   };
 
+  if (!games || games.length === 0) {
+    return (
+      <div className="flex justify-center">
+        <p className="text-center text-lg">No games found!</p>
+      </div>
+    );
+  }
+
   return games.map((game, index) => {
     return (
       <GameCard
