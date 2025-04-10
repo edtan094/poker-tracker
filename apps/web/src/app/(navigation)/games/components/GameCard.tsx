@@ -12,7 +12,7 @@ import { Button } from "@/components/ui/button";
 import React from "react";
 import { EditIcon, TrashIcon } from "lucide-react";
 import Link from "next/link";
-import AlertModal from "@/components/modal/AlertModal";
+import AlertModal from "@/components/modal/WarningModal";
 
 type GameCardProps = {
   game: GameForClient;
@@ -64,7 +64,7 @@ export default function GameCard({
           buttonText="Delete"
           buttonIcon={TrashIcon}
           title="Are you sure you want to delete this game?"
-          description="This action cannot be undone. This will permanently delete this game and remove your data from our servers."
+          description="This action cannot be undone. This will permanently delete this game and remove your data from our servers. Please type 'I want to delete this game' to confirm."
           actionText="Delete"
           cancelText="Cancel"
           handleAction={() => {
