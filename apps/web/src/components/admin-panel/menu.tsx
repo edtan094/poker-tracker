@@ -69,7 +69,7 @@ export function Menu({ isOpen, setIsOpen }: MenuProps) {
                               asChild
                               onClick={() => {
                                 if (isOpen) {
-                                  setIsOpen?.();
+                                  setIsOpen?.(false);
                                 }
                               }}
                             >
@@ -112,6 +112,7 @@ export function Menu({ isOpen, setIsOpen }: MenuProps) {
                         }
                         submenus={submenus}
                         isOpen={isOpen}
+                        setIsOpen={setIsOpen}
                       />
                     </div>
                   )

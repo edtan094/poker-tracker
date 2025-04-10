@@ -10,13 +10,13 @@ import { DropdownMenuArrow } from "@radix-ui/react-dropdown-menu";
 import {
   Collapsible,
   CollapsibleContent,
-  CollapsibleTrigger
+  CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 import {
   Tooltip,
   TooltipTrigger,
   TooltipContent,
-  TooltipProvider
+  TooltipProvider,
 } from "@/components/ui/tooltip";
 import {
   DropdownMenu,
@@ -24,7 +24,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger,
   DropdownMenuContent,
-  DropdownMenuSeparator
+  DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import { usePathname } from "next/navigation";
 
@@ -40,6 +40,7 @@ interface CollapseMenuButtonProps {
   active: boolean;
   submenus: Submenu[];
   isOpen: boolean | undefined;
+  setIsOpen?: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export function CollapseMenuButton({
@@ -47,7 +48,8 @@ export function CollapseMenuButton({
   label,
   active,
   submenus,
-  isOpen
+  isOpen,
+  setIsOpen,
 }: CollapseMenuButtonProps) {
   const pathname = usePathname();
   const isSubmenuActive = submenus.some((submenu) =>
@@ -112,6 +114,11 @@ export function CollapseMenuButton({
             }
             className="w-full justify-start h-10 mb-1"
             asChild
+            onClick={() => {
+              if (isOpen) {
+                setIsOpen?.(false);
+              }
+            }}
           >
             <Link href={href}>
               <span className="mr-4 ml-2">
