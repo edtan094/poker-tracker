@@ -10,16 +10,23 @@ import {
 import { GameForClient } from "../edit-game/types";
 import { Button } from "@/components/ui/button";
 import React from "react";
-import { EditIcon } from "lucide-react";
+import { EditIcon, TrashIcon } from "lucide-react";
 import Link from "next/link";
+import AlertModal from "@/components/modal/WarningModal";
 
 type GameCardProps = {
   game: GameForClient;
   length: number;
   index: number;
+  handleDelete: (gameId: string) => void;
 };
 
-export default function GameCard({ game, length, index }: GameCardProps) {
+export default function GameCard({
+  game,
+  length,
+  index,
+  handleDelete,
+}: GameCardProps) {
   const numberOfPlayers = game.playerGames.length;
 
   const totalBuyIns = game.playerGames.reduce((acc, pg) => {
@@ -44,13 +51,26 @@ export default function GameCard({ game, length, index }: GameCardProps) {
           <p>Total Buy Ins: ${totalBuyIns}</p>
         </div>
       </CardContent>
-      <CardFooter>
+      <CardFooter className=" flex justify-between">
         <Link href={`/games/edit-game/${game.id}`} className=" w-1/2">
           <Button>
             <EditIcon />
             Edit
           </Button>
         </Link>
+
+        <AlertModal
+          buttonVariant="destructive"
+          buttonText="Delete"
+          buttonIcon={TrashIcon}
+          title="Are you sure you want to delete this game?"
+          description="This action cannot be undone. This will permanently delete this game and remove your data from our servers. Please type 'I want to delete this game' to confirm."
+          actionText="Delete"
+          cancelText="Cancel"
+          handleAction={() => {
+            handleDelete(game.id);
+          }}
+        />
       </CardFooter>
     </Card>
   );

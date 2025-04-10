@@ -169,3 +169,58 @@ export async function updatePlayerScore(
 
   revalidatePath(`/games/${gameId}`);
 }
+
+export async function deleteGame(gameId: string) {
+  if (!gameId || typeof gameId !== "string") {
+    throw new Error("Game ID is required.");
+  }
+
+  const game = await prisma.game.findUnique({
+    where: { id: gameId },
+    include: {
+      playerGames: {
+        select: { playerId: true },
+      },
+    },
+  });
+
+  if (!game) throw new Error("Game not found.");
+
+  const affectedPlayerIds = [
+    ...new Set(game.playerGames.map((pg) => pg.playerId)),
+  ];
+
+  await prisma.$transaction(async (prisma) => {
+    await prisma.playerGame.deleteMany({
+      where: { gameId },
+    });
+
+    await prisma.game.delete({
+      where: { id: gameId },
+    });
+
+    for (const playerId of affectedPlayerIds) {
+      const totalGains = await prisma.playerGame.aggregate({
+        where: { playerId },
+        _sum: { gains: true },
+      });
+
+      const totalBuyIns = await prisma.playerGame.aggregate({
+        where: { playerId },
+        _sum: { buyIns: true },
+      });
+
+      await prisma.player.update({
+        where: { id: playerId },
+        data: {
+          gains: new Decimal(totalGains._sum.gains || 0),
+          buyIns: new Decimal(totalBuyIns._sum.buyIns || 0),
+        },
+      });
+    }
+  });
+
+  revalidatePath("/games/edit-game");
+  revalidatePath("/leaderboards");
+  return gameId;
+}

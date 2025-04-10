@@ -1,3 +1,4 @@
+"use client";
 import Link from "next/link";
 import { MenuIcon, PanelsTopLeft } from "lucide-react";
 
@@ -10,10 +11,13 @@ import {
   SheetTrigger,
   SheetTitle,
 } from "@/components/ui/sheet";
+import { useState } from "react";
 
 export function SheetMenu() {
+  const [isOpen, setIsOpen] = useState(false);
+
   return (
-    <Sheet>
+    <Sheet open={isOpen} onOpenChange={setIsOpen}>
       <SheetTrigger className="lg:hidden" asChild>
         <Button className="h-8" variant="outline" size="icon">
           <MenuIcon size={20} />
@@ -33,7 +37,7 @@ export function SheetMenu() {
             </Link>
           </Button> */}
         </SheetHeader>
-        <Menu isOpen />
+        <Menu isOpen={isOpen} setIsOpen={setIsOpen} />
       </SheetContent>
     </Sheet>
   );
