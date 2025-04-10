@@ -18,9 +18,10 @@ import {
 
 interface MenuProps {
   isOpen: boolean | undefined;
+  setIsOpen?: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-export function Menu({ isOpen }: MenuProps) {
+export function Menu({ isOpen, setIsOpen }: MenuProps) {
   const pathname = usePathname();
   const menuList = getMenuList(pathname);
 
@@ -66,6 +67,11 @@ export function Menu({ isOpen }: MenuProps) {
                               }
                               className="w-full justify-start h-10 mb-1"
                               asChild
+                              onClick={() => {
+                                if (isOpen) {
+                                  setIsOpen?.();
+                                }
+                              }}
                             >
                               <Link href={href}>
                                 <span
