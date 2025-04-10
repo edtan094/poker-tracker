@@ -10,8 +10,9 @@ import {
 import { GameForClient } from "../edit-game/types";
 import { Button } from "@/components/ui/button";
 import React from "react";
-import { EditIcon } from "lucide-react";
+import { EditIcon, TrashIcon } from "lucide-react";
 import Link from "next/link";
+import AlertModal from "@/components/modal/AlertModal";
 
 type GameCardProps = {
   game: GameForClient;
@@ -44,13 +45,23 @@ export default function GameCard({ game, length, index }: GameCardProps) {
           <p>Total Buy Ins: ${totalBuyIns}</p>
         </div>
       </CardContent>
-      <CardFooter>
+      <CardFooter className=" flex justify-between">
         <Link href={`/games/edit-game/${game.id}`} className=" w-1/2">
           <Button>
             <EditIcon />
             Edit
           </Button>
         </Link>
+
+        <AlertModal
+          buttonVariant="destructive"
+          buttonText="Delete"
+          buttonIcon={TrashIcon}
+          title="Are you sure you want to delete this game?"
+          description="This action cannot be undone. This will permanently delete this game and remove your data from our servers."
+          actionText="Delete"
+          cancelText="Cancel"
+        />
       </CardFooter>
     </Card>
   );
