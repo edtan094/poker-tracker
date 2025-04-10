@@ -13,6 +13,7 @@ import React from "react";
 import { EditIcon, TrashIcon } from "lucide-react";
 import Link from "next/link";
 import AlertModal from "@/components/modal/AlertModal";
+import { deleteGame } from "@/app/actions/GameActions";
 
 type GameCardProps = {
   game: GameForClient;
@@ -61,6 +62,9 @@ export default function GameCard({ game, length, index }: GameCardProps) {
           description="This action cannot be undone. This will permanently delete this game and remove your data from our servers."
           actionText="Delete"
           cancelText="Cancel"
+          handleAction={() => {
+            deleteGame(game.id);
+          }}
         />
       </CardFooter>
     </Card>

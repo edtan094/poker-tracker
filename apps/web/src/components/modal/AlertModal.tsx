@@ -28,6 +28,7 @@ type AlertModalProps = {
   description?: string;
   actionText?: string;
   cancelText?: string;
+  handleAction: () => void;
 };
 
 export default function AlertModal({
@@ -38,6 +39,7 @@ export default function AlertModal({
   description,
   actionText,
   cancelText,
+  handleAction,
 }: AlertModalProps) {
   return (
     <AlertDialog>
@@ -54,7 +56,9 @@ export default function AlertModal({
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>{cancelText}</AlertDialogCancel>
-          <AlertDialogAction>{actionText}</AlertDialogAction>
+          <AlertDialogAction>
+            <button onClick={handleAction}>{actionText}</button>
+          </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>
