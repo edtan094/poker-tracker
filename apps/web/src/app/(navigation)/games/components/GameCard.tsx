@@ -13,15 +13,20 @@ import React from "react";
 import { EditIcon, TrashIcon } from "lucide-react";
 import Link from "next/link";
 import AlertModal from "@/components/modal/AlertModal";
-import { deleteGame } from "@/app/actions/GameActions";
 
 type GameCardProps = {
   game: GameForClient;
   length: number;
   index: number;
+  handleDelete: (gameId: string) => void;
 };
 
-export default function GameCard({ game, length, index }: GameCardProps) {
+export default function GameCard({
+  game,
+  length,
+  index,
+  handleDelete,
+}: GameCardProps) {
   const numberOfPlayers = game.playerGames.length;
 
   const totalBuyIns = game.playerGames.reduce((acc, pg) => {
@@ -63,7 +68,7 @@ export default function GameCard({ game, length, index }: GameCardProps) {
           actionText="Delete"
           cancelText="Cancel"
           handleAction={() => {
-            deleteGame(game.id);
+            handleDelete(game.id);
           }}
         />
       </CardFooter>

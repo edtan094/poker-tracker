@@ -4,6 +4,7 @@ import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import AdminPanelLayout from "@/components/admin-panel/admin-panel-layout";
 import { ContentLayout } from "@/components/admin-panel/content-layout";
+import { Toaster } from "@/components/ui/toaster";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -40,6 +41,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
             <AdminPanelLayout>
               <ContentLayout title="Poker Tracker">{children}</ContentLayout>
             </AdminPanelLayout>
+            <Toaster />
           </ThemeProvider>
         </body>
       </html>

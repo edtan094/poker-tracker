@@ -222,4 +222,5 @@ export async function deleteGame(gameId: string) {
 
   revalidatePath("/games/edit-game");
   revalidatePath("/leaderboards");
+  return gameId;
 }
