@@ -19,7 +19,16 @@ export function SheetMenu() {
   return (
     <Sheet open={isOpen} onOpenChange={setIsOpen}>
       <SheetTrigger className="lg:hidden" asChild>
-        <Button className="h-8" variant="outline" size="icon">
+        <Button
+          className="h-8"
+          variant="outline"
+          size="icon"
+          onClick={() => {
+            if (isOpen) {
+              setIsOpen(false);
+            }
+          }}
+        >
           <MenuIcon size={20} />
         </Button>
       </SheetTrigger>
