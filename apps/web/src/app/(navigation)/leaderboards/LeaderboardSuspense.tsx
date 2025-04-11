@@ -1,3 +1,4 @@
+import Skeleton from "@/components/admin-panel/skeleton/GenericSkeleton";
 import {
   Table,
   TableBody,
@@ -37,13 +38,5 @@ export default function LeaderboardSuspense() {
         </TableBody>
       </Table>
     </div>
-  );
-}
-
-function Skeleton({ className }: { className?: string }) {
-  return (
-    <div
-      className={`animate-pulse bg-muted rounded-md ${className || "h-4 w-full"}`}
-    />
   );
 }
