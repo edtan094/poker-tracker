@@ -13,9 +13,9 @@ export default function ListOfGamesSkeleton() {
 
   return (
     <>
-      {skeletonCards.map(() => {
+      {skeletonCards.map((_, index) => {
         return (
-          <Card className="mb-4 md:w-[383px] w-[250px]">
+          <Card className="mb-4 md:w-[383px] w-[250px]" key={index}>
             <CardHeader>
               <CardTitle className="text-lg md:text-3xl">
                 <Skeleton className="h-6 md:h-8 w-1/2" />
