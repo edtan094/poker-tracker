@@ -61,7 +61,10 @@ export default function Game({ game, isEdit }: GameProps) {
     setPlayers((prevPlayers) => {
       const newPlayers = [...prevPlayers];
       newPlayers.splice(index, 1);
-      localStorage.setItem("players", JSON.stringify(newPlayers));
+      if (!isEdit) {
+        localStorage.setItem("players", JSON.stringify(newPlayers));
+      }
+
       return newPlayers;
     });
   };
@@ -163,6 +166,7 @@ export default function Game({ game, isEdit }: GameProps) {
             state={state}
             setAllPlayers={setAllPlayers}
             toggleExistingOrNewPlayer={toggleExistingOrNewPlayer}
+            isEdit={isEdit}
           />
         </div>
         <div className=" my-8">
@@ -186,6 +190,7 @@ export default function Game({ game, isEdit }: GameProps) {
           chipMode={chipMode}
           chipsPerBuyIn={chipsPerBuyIn}
           dollarPerBuyIn={dollarPerBuyIn}
+          isEdit={isEdit}
         />
       </div>
       <div className=" border-t mt-4 pt-4 text-green-500">
