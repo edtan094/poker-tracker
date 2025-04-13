@@ -5,6 +5,7 @@ import { ThemeProvider } from "@/components/theme-provider";
 import AdminPanelLayout from "@/components/admin-panel/admin-panel-layout";
 import { ContentLayout } from "@/components/admin-panel/content-layout";
 import { Toaster } from "@/components/ui/toaster";
+import { ReactScan } from "@/lib/ReactScan";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -31,6 +32,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
     <>
       <html lang="en" suppressHydrationWarning>
         <head />
+        <ReactScan />
         <body>
           <ThemeProvider
             attribute="class"
