@@ -21,6 +21,7 @@ type GameTableProps = {
   chipMode: boolean;
   chipsPerBuyIn: number;
   dollarPerBuyIn: number;
+  isEdit: boolean;
 };
 
 export default function GameTable({
@@ -30,6 +31,7 @@ export default function GameTable({
   chipMode,
   chipsPerBuyIn,
   dollarPerBuyIn,
+  isEdit,
 }: GameTableProps) {
   const [gainsInputs, setGainsInputs] = useState<string[]>(
     players.map((p) => {
@@ -42,7 +44,9 @@ export default function GameTable({
 
   const debouncedUpdate = useCallback(
     debounce((newPlayers) => {
-      localStorage.setItem("players", JSON.stringify(newPlayers));
+      if (!isEdit) {
+        localStorage.setItem("players", JSON.stringify(newPlayers));
+      }
       setPlayers(newPlayers);
     }, 500),
     [setPlayers]

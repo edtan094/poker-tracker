@@ -28,6 +28,7 @@ type SubmitPlayerFormProps = {
   state: ActionResponse;
   setAllPlayers: (players: Player[]) => void;
   toggleExistingOrNewPlayer: () => void;
+  isEdit: boolean;
 };
 
 export default function SubmitPlayerForm({
@@ -39,22 +40,25 @@ export default function SubmitPlayerForm({
   state,
   setAllPlayers,
   toggleExistingOrNewPlayer,
+  isEdit,
 }: SubmitPlayerFormProps) {
   const [existingPlayerId, setExistingPlayerId] = useState("");
 
   useEffect(() => {
     if (state.success) {
       setPlayers((prevState) => {
-        localStorage.setItem(
-          "players",
-          JSON.stringify([
-            ...prevState,
-            {
-              id: state.data?.id,
-              name: state.data?.name,
-            },
-          ])
-        );
+        if (!isEdit) {
+          localStorage.setItem(
+            "players",
+            JSON.stringify([
+              ...prevState,
+              {
+                id: state.data?.id,
+                name: state.data?.name,
+              },
+            ])
+          );
+        }
         return [
           ...prevState,
           {
