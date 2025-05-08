@@ -83,7 +83,9 @@ export default function GameTable({
   };
 
   const handleChangeGains = (index: number, value: string) => {
-    if (!/^[-]?\d*\.?\d*$/.test(value)) return;
+    const regex = chipMode ? /^-?\d*$/ : /^-?\d*\.?\d*$/;
+
+    if (!regex.test(value)) return;
 
     setGainsInputs((prev) => {
       const newInputs = [...prev];
@@ -91,38 +93,34 @@ export default function GameTable({
       return newInputs;
     });
 
-    const updatePlayerGains = (gainValue: number) => {
-      setPlayers((prevPlayers) => {
-        const newPlayers = [...prevPlayers];
-        newPlayers[index] = {
-          ...newPlayers[index],
-          gains: gainValue,
-        };
-        debouncedUpdate(newPlayers);
-        return newPlayers;
-      });
-    };
+    const parsed = chipMode ? parseInt(value, 10) : parseFloat(value);
 
-    const parsed = parseFloat(value);
     if (!isNaN(parsed)) {
       const dollarValue = chipMode
         ? (parsed / chipsPerBuyIn) * dollarPerBuyIn
         : parsed;
 
-      updatePlayerGains(dollarValue);
-    }
-    if (isNaN(parsed) && value !== "-" && value !== "-." && value !== ".") {
-      updatePlayerGains(0);
+      setPlayers((prevPlayers) => {
+        const newPlayers = [...prevPlayers];
+        newPlayers[index] = {
+          ...newPlayers[index],
+          gains: Math.round(dollarValue * 100) / 100,
+        };
+        debouncedUpdate(newPlayers);
+        return newPlayers;
+      });
     }
   };
 
   useEffect(() => {
     setGainsInputs(() => {
       return players.map((p) => {
-        if (!p.gains) return "";
-        return chipMode
-          ? ((p.gains / dollarPerBuyIn) * chipsPerBuyIn).toString()
-          : p.gains.toString();
+        const gains = p.gains ?? 0;
+        const value = chipMode
+          ? (gains / dollarPerBuyIn) * chipsPerBuyIn
+          : gains;
+
+        return value.toFixed(2).replace(/\.00$/, "");
       });
     });
   }, [players, chipMode, chipsPerBuyIn, dollarPerBuyIn]);
@@ -164,8 +162,10 @@ export default function GameTable({
               <TableCell className=" p-2">
                 <Input
                   type="text"
+                  inputMode={chipMode ? "numeric" : "decimal"}
                   value={gainsInputs[index]}
                   onChange={(e) => handleChangeGains(index, e.target.value)}
+                  step={chipMode ? 1 : "any"}
                 />
               </TableCell>
               <TableCell>
